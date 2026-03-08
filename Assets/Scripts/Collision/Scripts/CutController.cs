@@ -1,0 +1,86 @@
+using System.Collections;
+using System.Collections.Generic;
+using System.Drawing;
+using Unity.Collections;
+using UnityEngine;
+
+public class CutController : MonoBehaviour
+{
+    public Vector2 InteractiveArea = Vector2.one;
+    public float PointDis = 0.1f;
+
+    public bool _isStarting = false;
+    public Vector3 _startPos = Vector3.zero;
+    public Vector3 _endPos = Vector3.zero;
+
+    public LineRenderer _lineRenderer;
+    public float LinePosZ = 5;
+
+    private List<Vector3> _lineRendererPoints = new List<Vector3>();
+    private Vector3 _curPoint = Vector3.zero;
+
+    //private void Update()
+    //{
+    //    if (Input.GetMouseButtonDown(0))
+    //    {
+    //        Vector3 mousePos = Input.mousePosition;
+    //        mousePos.z = 10;
+    //        Vector3 point = Camera.main.ScreenToWorldPoint(mousePos);
+    //        _lineRendererPoints.Add(point); 
+    //        _lineRenderer.positionCount = _lineRendererPoints.Count;
+    //        _lineRenderer.SetPosition(_lineRendererPoints.Count - 1, point);
+    //    }
+
+    //    if (Input.GetMouseButtonDown(1))
+    //    {
+    //        _lineRendererPoints.Clear();
+    //        _lineRenderer.positionCount = 0;
+    //    }
+    //}
+
+    void Update()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            _isStarting = true;
+            _lineRendererPoints.Clear();
+            _startPos = GetMouseWorldPos(Input.mousePosition);
+            AddLineRendererPoint(_startPos);
+        }
+        else if (Input.GetMouseButtonUp(0) && _isStarting)
+        {
+            _isStarting = false;
+            _endPos = GetMouseWorldPos(Input.mousePosition);
+            AddLineRendererPoint(_endPos);
+        }
+        LintRendererPointsUpdate();
+    }
+
+    private void LintRendererPointsUpdate()
+    {
+        if (_isStarting)
+        {
+            Vector3 curMousePos = GetMouseWorldPos(Input.mousePosition);
+            float dis = (curMousePos - _curPoint).sqrMagnitude;
+            if (dis >= PointDis * PointDis)
+            {
+                AddLineRendererPoint(curMousePos);
+            }
+        }
+    }
+
+    private void AddLineRendererPoint(Vector3 point)
+    {
+        _lineRendererPoints.Add(point);
+        _curPoint = point;
+        _lineRenderer.positionCount = _lineRendererPoints.Count;
+        _lineRenderer.SetPosition(_lineRendererPoints.Count - 1, _curPoint);
+    }
+
+    private Vector3 GetMouseWorldPos(Vector3 inputPos)
+    {
+        Vector3 mousePos = inputPos;
+        mousePos.z = LinePosZ;
+        return Camera.main.ScreenToWorldPoint(mousePos);
+    }
+}

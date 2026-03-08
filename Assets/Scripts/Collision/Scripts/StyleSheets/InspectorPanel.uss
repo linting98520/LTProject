@@ -1,0 +1,12 @@
+.my-box-style {
+    background-color: #383838;
+    border-width: 1px;
+    border-color: #1A1A1A;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 5px;
+}
+
+.my-box-style:hover {
+    background-color: #454545; /* 滑鼠經過變色 */
+}

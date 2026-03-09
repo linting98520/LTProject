@@ -16,6 +16,8 @@ public class CutController : MonoBehaviour
     public LineRenderer _lineRenderer;
     public float LinePosZ = 5;
 
+    [SerializeField] private GeometryController geometryController;
+
     private List<Vector3> _lineRendererPoints = new List<Vector3>();
     private Vector3 _curPoint = Vector3.zero;
 
@@ -52,6 +54,7 @@ public class CutController : MonoBehaviour
             _isStarting = false;
             _endPos = GetMouseWorldPos(Input.mousePosition);
             AddLineRendererPoint(_endPos);
+            DoCut();
         }
         LintRendererPointsUpdate();
     }
@@ -82,5 +85,14 @@ public class CutController : MonoBehaviour
         Vector3 mousePos = inputPos;
         mousePos.z = LinePosZ;
         return Camera.main.ScreenToWorldPoint(mousePos);
+    }
+
+    private void DoCut()
+    {
+        Vector3 p1 = new Vector3(_lineRendererPoints[0].x, _lineRendererPoints[0].y, _lineRendererPoints[0].z);
+        int last = _lineRendererPoints.Count - 1;
+        Vector3 p2 = new Vector3(_lineRendererPoints[last].x, _lineRendererPoints[last].y, _lineRendererPoints[last].z);
+        geometryController.ClassifyVertices(p1, p2);
+        _lineRenderer.positionCount = 0;
     }
 }

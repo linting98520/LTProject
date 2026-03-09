@@ -1,11 +1,9 @@
 using Sirenix.OdinInspector;
+using Sirenix.Utilities;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using UnityEditor.Hardware;
 using UnityEngine;
 using UnityEngine.UIElements;
-using static GeometryController;
 
 public class GeometryController : MonoBehaviour
 {
@@ -34,15 +32,23 @@ public class GeometryController : MonoBehaviour
     public Vector2 DivideLineA;
     public Vector2 DivideLineB;
 
-    private List<VertexData> rightVerticesList = new List<VertexData>();
-    private List<VertexData> leftVerticesList = new List<VertexData>();
+    private List<VertexData> group01VerticesList = new List<VertexData>();
+    private List<VertexData> group02VerticesList = new List<VertexData>();
 
     private List<VertexData> vertexDatas = new List<VertexData>(); //某 Sprite 全部的點資料
     private List<VertexData> intersectDatas = new List<VertexData>(); // 分割線重疊點的資料
 
+    private List<GameObject> splitObjs = new List<GameObject>();
+
     public void Clear()
     {
         TriangleShowList = new List<DrawTriangleData>();
+        group01VerticesList.Clear();
+        group02VerticesList.Clear();
+        int count = splitObjs.Count;
+        for (int i = 0; i < count; i++)
+            DestroyImmediate(splitObjs[i]);
+        splitObjs.Clear();
     }
 
     public void ShowSpriteVertices(SpriteRenderer renderer)
@@ -50,8 +56,13 @@ public class GeometryController : MonoBehaviour
 
     }
 
+    public void DoCut()
+    {
+        ClassifyVertices(DivideLineA, DivideLineB);
+    }
+
     [Button]
-    public void ClassifyVertices()
+    public void ClassifyVertices(Vector3 p1, Vector3 p2)
     {
         int vertexCount = TemplateSpriteRenderer.sprite.vertices.Length;
 
@@ -68,8 +79,8 @@ public class GeometryController : MonoBehaviour
         }
 
         //把分割線兩側的點轉成與圖片相同座標體系方便計算
-        Vector2 divideP1 = TemplateSpriteRenderer.transform.InverseTransformPoint(DivideLineA);
-        Vector2 divideP2 = TemplateSpriteRenderer.transform.InverseTransformPoint(DivideLineB);
+        Vector2 divideP1 = TemplateSpriteRenderer.transform.InverseTransformPoint(p1);
+        Vector2 divideP2 = TemplateSpriteRenderer.transform.InverseTransformPoint(p2);
 
         //嘗試獲得交點，至少有兩個表示成功切割
         RecordIntersectVertexData(vertexDatas, divideP1, divideP2);
@@ -81,11 +92,11 @@ public class GeometryController : MonoBehaviour
         }
 
         //初始化頂點群組
-        rightVerticesList.Clear();
-        rightVerticesList.AddRange(intersectDatas);
+        group01VerticesList.Clear();
+        group01VerticesList.AddRange(intersectDatas);
 
-        leftVerticesList.Clear();
-        leftVerticesList.AddRange(intersectDatas);
+        group02VerticesList.Clear();
+        group02VerticesList.AddRange(intersectDatas);
 
         //分類頂點，分為在分割線的左邊或右邊
         Vector2 intersectP1 = intersectDatas[0].Position;
@@ -97,17 +108,17 @@ public class GeometryController : MonoBehaviour
 
             var res = CollisionPointTool.CaculateCross(intersectP1, point, intersectP1, intersectP2);
             if (res <= 0)
-                rightVerticesList.Add(vertexDatas[i]);
+                group01VerticesList.Add(vertexDatas[i]);
             else 
-                leftVerticesList.Add(vertexDatas[i]);
+                group02VerticesList.Add(vertexDatas[i]);
         }
 
         //建立Mesh
-        leftVerticesList = GetClockWiseIndices(leftVerticesList);
-        CreateVertices("Left", leftVerticesList);
+        group02VerticesList = GetClockWiseIndices(group02VerticesList);
+        CreateVertices("Split02", group02VerticesList);
 
-        rightVerticesList = GetClockWiseIndices(rightVerticesList);
-        CreateVertices("Right", rightVerticesList);
+        group01VerticesList = GetClockWiseIndices(group01VerticesList);
+        CreateVertices("Split01", group01VerticesList);
     }
 
     private List<VertexData> GetClockWiseIndices(List<VertexData> datas)
@@ -281,6 +292,8 @@ public class GeometryController : MonoBehaviour
         mesh.triangles = triangles;
         mesh.RecalculateNormals();
         mf.mesh = mesh;
+
+        splitObjs.Add(obj);
     }
 
     private void RecordGizmosTraingleList(Vector2[] spriteVertices)
@@ -319,21 +332,21 @@ public class GeometryController : MonoBehaviour
         }
 
         Gizmos.color = Color.blue;
-        foreach (var vertex in leftVerticesList)
+        foreach (var vertex in group02VerticesList)
         {
-            Gizmos.DrawSphere(transform.TransformPoint(vertex.Position), ShowSphereRadius);
+            Gizmos.DrawSphere(TemplateSpriteRenderer.transform.TransformPoint(vertex.Position), ShowSphereRadius);
         }
 
         Gizmos.color = Color.red;
-        foreach (var vertex in rightVerticesList)
+        foreach (var vertex in group01VerticesList)
         {
-            Gizmos.DrawSphere(transform.TransformPoint(vertex.Position), ShowSphereRadius);
+            Gizmos.DrawSphere(TemplateSpriteRenderer.transform.TransformPoint(vertex.Position), ShowSphereRadius);
         }
 
         Gizmos.color = Color.magenta;
         foreach (var p in intersectDatas)
         {
-            Gizmos.DrawSphere(transform.TransformPoint(p.Position), ShowSphereRadius);
+            Gizmos.DrawSphere(TemplateSpriteRenderer.transform.TransformPoint(p.Position), ShowSphereRadius);
         }
     }
 }

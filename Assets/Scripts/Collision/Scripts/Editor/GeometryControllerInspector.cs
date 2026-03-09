@@ -44,33 +44,33 @@ public class GeometryControllerInspector : Editor
         root.AddSpace();
 
         #region spriteButtonArea
-        var spriteButtonArea = VisualElementUtility.CreateHorizontalBox();
-        spriteButtonArea.style.alignItems = Align.Center;
-        root.Add(spriteButtonArea);
+        //var spriteButtonArea = VisualElementUtility.CreateHorizontalBox();
+        //spriteButtonArea.style.alignItems = Align.Center;
+        //root.Add(spriteButtonArea);
 
-        ObjectField objectPicker = new ObjectField("目標物件")
-        {
-            objectType = typeof(SpriteRenderer),
-            allowSceneObjects = true,
-            style = { flexShrink = 1, flexBasis = 0, flexGrow = 1}
-        };
-        spriteButtonArea.Add(objectPicker);
+        //ObjectField objectPicker = new ObjectField("目標物件")
+        //{
+        //    objectType = typeof(SpriteRenderer),
+        //    allowSceneObjects = true,
+        //    style = { flexShrink = 1, flexBasis = 0, flexGrow = 1}
+        //};
+        //spriteButtonArea.Add(objectPicker);
 
-        Button showVerticesBtn = new Button { text = "重設數值" };
-        showVerticesBtn.style.flexShrink = 0;
-        showVerticesBtn.style.width = 100;
-        showVerticesBtn.RegisterCallback<ClickEvent>(evt =>
-        {
-            controller.ShowSpriteVertices(objectPicker.value as SpriteRenderer);
-        });
-        spriteButtonArea.Add(showVerticesBtn);
+        //Button showVerticesBtn = new Button { text = "重設數值" };
+        //showVerticesBtn.style.flexShrink = 0;
+        //showVerticesBtn.style.width = 100;
+        //showVerticesBtn.RegisterCallback<ClickEvent>(evt =>
+        //{
+        //    controller.ShowSpriteVertices(objectPicker.value as SpriteRenderer);
+        //});
+        //spriteButtonArea.Add(showVerticesBtn);
         #endregion
 
         root.AddSpace();
 
         Button divideButton = new Button(() =>
         {
-            controller.ClassifyVertices();
+            controller.DoCut();
         });
         divideButton.text = "Divide";
         root.Add(divideButton);

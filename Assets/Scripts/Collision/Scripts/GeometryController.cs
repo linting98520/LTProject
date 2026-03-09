@@ -115,10 +115,10 @@ public class GeometryController : MonoBehaviour
 
         //«Ø¥ßMesh
         group02VerticesList = GetClockWiseIndices(group02VerticesList);
-        CreateVertices("Split02", group02VerticesList);
+        CreateVertices("¥ª", group02VerticesList);
 
         group01VerticesList = GetClockWiseIndices(group01VerticesList);
-        CreateVertices("Split01", group01VerticesList);
+        CreateVertices("¥k", group01VerticesList);
     }
 
     private List<VertexData> GetClockWiseIndices(List<VertexData> datas)

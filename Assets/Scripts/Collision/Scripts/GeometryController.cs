@@ -32,28 +32,29 @@ public class GeometryController : MonoBehaviour
     public Vector2 DivideLineA;
     public Vector2 DivideLineB;
 
+    public float Movement = 10.0f;
+    public float MoveSpeed = 5.0f;
+
     private List<VertexData> group01VerticesList = new List<VertexData>();
     private List<VertexData> group02VerticesList = new List<VertexData>();
 
     private List<VertexData> vertexDatas = new List<VertexData>(); //某 Sprite 全部的點資料
     private List<VertexData> intersectDatas = new List<VertexData>(); // 分割線重疊點的資料
 
-    private List<GameObject> splitObjs = new List<GameObject>();
+    private List<SperateObj> separateObjs = new List<SperateObj>();
+
+    private Vector2 dividePoint1;
+    private Vector2 dividePoint2;
 
     public void Clear()
     {
         TriangleShowList = new List<DrawTriangleData>();
         group01VerticesList.Clear();
         group02VerticesList.Clear();
-        int count = splitObjs.Count;
+        int count = separateObjs.Count;
         for (int i = 0; i < count; i++)
-            DestroyImmediate(splitObjs[i]);
-        splitObjs.Clear();
-    }
-
-    public void ShowSpriteVertices(SpriteRenderer renderer)
-    {
-
+            DestroyImmediate(separateObjs[i]);
+        separateObjs.Clear();
     }
 
     public void DoCut()
@@ -64,6 +65,11 @@ public class GeometryController : MonoBehaviour
     [Button]
     public void ClassifyVertices(Vector3 p1, Vector3 p2)
     {
+        dividePoint1 = p1;
+        dividePoint2 = p2;
+
+        separateObjs.Clear();
+
         int vertexCount = TemplateSpriteRenderer.sprite.vertices.Length;
 
         //得 Sprite 點，並逆時針排列
@@ -106,11 +112,17 @@ public class GeometryController : MonoBehaviour
         {
             Vector2 point = vertexDatas[i].Position;
 
-            var res = CollisionPointTool.CaculateCross(intersectP1, point, intersectP1, intersectP2);
+            //AxB = -(BxA)
+            //A通常為切割線 B法線
+            var res = CollisionPointTool.CaculateCross(intersectP1, intersectP2, intersectP1, point);
             if (res <= 0)
+            {
                 group01VerticesList.Add(vertexDatas[i]);
-            else 
+            }
+            else
+            {
                 group02VerticesList.Add(vertexDatas[i]);
+            }
         }
 
         //建立Mesh
@@ -119,6 +131,8 @@ public class GeometryController : MonoBehaviour
 
         group01VerticesList = GetClockWiseIndices(group01VerticesList);
         CreateVertices("右", group01VerticesList);
+
+        StartMove();
     }
 
     private List<VertexData> GetClockWiseIndices(List<VertexData> datas)
@@ -215,9 +229,15 @@ public class GeometryController : MonoBehaviour
         Vector3[] finalVertices = new Vector3[vertexCount];
         Vector2[] finalUVs = new Vector2[vertexCount];
 
+        // --- 新增：計算所有頂點的中心點 ---
+        Vector3 center = Vector3.zero;
+        foreach (var d in vertexDatas) center += (Vector3)d.Position;
+        center /= vertexCount;
+
         for (int i = 0; i < vertexCount; i++)
         {
-            finalVertices[i] = vertexDatas[i].Position;
+            // --- 新增：將頂點平移，讓 Mesh 中心變成 (0,0) ---
+            finalVertices[i] = (Vector3)vertexDatas[i].Position - center;
             finalUVs[i] = vertexDatas[i].UV;
         }
 
@@ -232,7 +252,39 @@ public class GeometryController : MonoBehaviour
         }
 
         // 建立 Mesh 物件
-        CreateMeshObject(objName, finalVertices, finalUVs, triangles);
+        CreateMeshObject(objName, finalVertices, finalUVs, triangles, center);
+    }
+
+    private void CreateMeshObject(string objName, Vector3[] vertices, Vector2[] uvs, int[] triangles, Vector3 center)
+    {
+        GameObject obj = new GameObject(objName);
+        obj.transform.position = TemplateSpriteRenderer.transform.TransformPoint(center);
+        obj.transform.rotation = TemplateSpriteRenderer.transform.rotation;
+        obj.transform.localScale = TemplateSpriteRenderer.transform.localScale;
+        SperateObj sObj = obj.AddComponent<SperateObj>();
+        sObj.Init(dividePoint1, dividePoint2, Movement, MoveSpeed);
+
+        MeshFilter mf = obj.AddComponent<MeshFilter>();
+        MeshRenderer mr = obj.AddComponent<MeshRenderer>();
+        mr.material = new Material(Shader.Find("Sprites/Default"));
+        mr.material.mainTexture = TemplateSpriteRenderer.sprite.texture;
+
+        Mesh mesh = new Mesh();
+        mesh.vertices = vertices;
+        mesh.uv = uvs;
+        mesh.triangles = triangles;
+        mesh.RecalculateNormals();
+        mf.mesh = mesh;
+
+        separateObjs.Add(sObj);
+    }
+
+    private void StartMove()
+    {
+        foreach (var obj in separateObjs)
+        {
+            obj.StartMove();
+        }
     }
 
     [Button]
@@ -269,31 +321,9 @@ public class GeometryController : MonoBehaviour
         }
 
         // 建立 Mesh 物件
-        CreateMeshObject("Object", finalVertices, finalUVs, triangles);
+        //CreateMeshObject("Object", finalVertices, finalUVs, triangles);
 
         RecordGizmosTraingleList(spriteVertices);
-    }
-
-    private void CreateMeshObject(string objName, Vector3[] vertices, Vector2[] uvs, int[] triangles)
-    {
-        GameObject obj = new GameObject(objName);
-        obj.transform.position = TemplateSpriteRenderer.transform.position;
-        obj.transform.rotation = TemplateSpriteRenderer.transform.rotation;
-        obj.transform.localScale = TemplateSpriteRenderer.transform.localScale;
-
-        MeshFilter mf = obj.AddComponent<MeshFilter>();
-        MeshRenderer mr = obj.AddComponent<MeshRenderer>();
-        mr.material = new Material(Shader.Find("Sprites/Default"));
-        mr.material.mainTexture = TemplateSpriteRenderer.sprite.texture;
-
-        Mesh mesh = new Mesh();
-        mesh.vertices = vertices;
-        mesh.uv = uvs;
-        mesh.triangles = triangles;
-        mesh.RecalculateNormals();
-        mf.mesh = mesh;
-
-        splitObjs.Add(obj);
     }
 
     private void RecordGizmosTraingleList(Vector2[] spriteVertices)

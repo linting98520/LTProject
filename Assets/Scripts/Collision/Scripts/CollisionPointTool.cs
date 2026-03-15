@@ -308,4 +308,19 @@ public class CollisionPointTool
             }
         }
     }
+
+    /// <summary>
+    /// 獲得過一點的垂直向量
+    /// </summary>
+    public static Vector2 GetPerpendicularVector(Vector2 crossPoint, Vector2 p1, Vector2 p2)
+    {
+        Vector2 v = p2 - p1;
+        Vector2 u = crossPoint - p1;
+
+        float t = Vector2.Dot(v, u) / v.sqrMagnitude;
+        Vector2 d = p1 + t * v;
+
+        Vector2 res = d - crossPoint;
+        return res;
+    }
 }

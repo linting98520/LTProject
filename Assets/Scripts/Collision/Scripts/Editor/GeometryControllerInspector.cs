@@ -43,6 +43,16 @@ public class GeometryControllerInspector : Editor
 
         root.AddSpace();
 
+        var movement = new FloatField("移動距離");
+        movement.BindProperty(serializedObject.FindProperty(nameof(GeometryController.Movement)));
+        root.Add(movement);
+
+        var speed = new FloatField("移動速度");
+        speed.BindProperty(serializedObject.FindProperty(nameof(GeometryController.MoveSpeed)));
+        root.Add(speed);
+
+        root.AddSpace();
+
         #region spriteButtonArea
         //var spriteButtonArea = VisualElementUtility.CreateHorizontalBox();
         //spriteButtonArea.style.alignItems = Align.Center;

@@ -21,25 +21,6 @@ public class CutController : MonoBehaviour
     private List<Vector3> _lineRendererPoints = new List<Vector3>();
     private Vector3 _curPoint = Vector3.zero;
 
-    //private void Update()
-    //{
-    //    if (Input.GetMouseButtonDown(0))
-    //    {
-    //        Vector3 mousePos = Input.mousePosition;
-    //        mousePos.z = 10;
-    //        Vector3 point = Camera.main.ScreenToWorldPoint(mousePos);
-    //        _lineRendererPoints.Add(point); 
-    //        _lineRenderer.positionCount = _lineRendererPoints.Count;
-    //        _lineRenderer.SetPosition(_lineRendererPoints.Count - 1, point);
-    //    }
-
-    //    if (Input.GetMouseButtonDown(1))
-    //    {
-    //        _lineRendererPoints.Clear();
-    //        _lineRenderer.positionCount = 0;
-    //    }
-    //}
-
     void Update()
     {
         if (Input.GetMouseButtonDown(0))

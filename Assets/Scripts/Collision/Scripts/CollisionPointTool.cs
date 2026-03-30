@@ -159,8 +159,13 @@ public class CollisionPointTool
     {
         point = Vector2.zero;
 
-        Vector2 r = a2 - a1;
-        Vector2 s = b2 - b1;
+        //r
+        double rx = (double)a2.x - a1.x;
+        double ry = (double)a2.y - a1.y;
+
+        //s
+        double sx = (double)b2.x - b1.x;
+        double sy = (double)b2.y - b1.y;
 
         double rs = CaculateCross(a1, a2, b1, b2);
 
@@ -171,30 +176,28 @@ public class CollisionPointTool
         if (Mathf.Abs((float)rs) < 1e-6f)
             return false;
 
+        double dx = (double)b1.x - a1.x;
+        double dy = (double)b1.y - a1.y;
+
         //盢ㄢ秖Θ
         //A => P(t) = a1 + t * r
         //B => P(u) = b1 + u * s
         //t 蛤 u 盽计
         //安Τユ翴ゲ﹚Θミ => a1 + t * r =  b1 + u * s
-        double t = ((double)((b1.x - a1.x) * s.y) - (double)((b1.y - a1.y) * s.x)) / rs; // ((B1 - A1) * s) / r * s
-        double u = ((double)((b1.x - a1.x) * r.y) - (double)((b1.y - a1.y) * r.x)) / rs; // ((B1 - A1) * r) / r * s
+        double t = (dx * sy - dy * sx) / rs; // ((B1 - A1) * s) / r * s
+        double u = (dx * ry - dy * rx) / rs; // ((B1 - A1) * r) / r * s
 
         //ユ翴狦 (a2-a1) ㎝ (b2-b1) 絬琿t ㎝ u 莱赣单0单1
         if (t >= 0 && t <= 1 && u >= 0 && u <= 1)
         {
             //ㄏノ t
-            Vector2 dv2 = r;
-            dv2.x = (float)(t * dv2.x);
-            dv2.y = (float)(t * dv2.y);
+            Vector2 res = new Vector2((float)(a1.x + t * rx), (float)(a1.y + t * ry)); //a1 + t * r
 
-            point = a1 + dv2; //a1 + (t * r)
+            //ㄏノ u
+            //Vector2 res = new Vector2((float)(b1.x + u * sx), (float)(b1.y + u * sy)); //b1 + u * s
+
+            point = res; 
             return true;
-
-            //ㄏノ u 
-            //Vector2 dv2 = s;
-            //dv2.x = (float)(u * dv2.x);
-            //dv2.y = (float)(u * dv2.y);
-            //point = b1 + dv2;
         }
         return false;
     }

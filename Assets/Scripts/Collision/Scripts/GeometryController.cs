@@ -224,24 +224,25 @@ public class GeometryController : MonoBehaviour
 
     private void CreateVertices(string objName, List<VertexData> vertexDatas)
     {
-        // 提取排序後的頂點與 UV
+        //提取排序後的頂點與UV
         int vertexCount = vertexDatas.Count;
         Vector3[] finalVertices = new Vector3[vertexCount];
         Vector2[] finalUVs = new Vector2[vertexCount];
 
-        // --- 新增：計算所有頂點的中心點 ---
+        //計算所有頂點的中心點
         Vector3 center = Vector3.zero;
-        foreach (var d in vertexDatas) center += (Vector3)d.Position;
+        foreach (var d in vertexDatas) 
+            center += (Vector3)d.Position;
         center /= vertexCount;
 
         for (int i = 0; i < vertexCount; i++)
         {
-            // --- 新增：將頂點平移，讓 Mesh 中心變成 (0,0) ---
+            //將頂點平移讓 Mesh 中心變成 (0,0)
             finalVertices[i] = (Vector3)vertexDatas[i].Position - center;
             finalUVs[i] = vertexDatas[i].UV;
         }
 
-        // 紀錄三角形
+        //紀錄三角形
         int triangleCount = finalVertices.Length - 2;
         int[] triangles = new int[triangleCount * 3];
         for (int i = 0; i < triangleCount; i++)
@@ -251,7 +252,7 @@ public class GeometryController : MonoBehaviour
             triangles[i * 3 + 2] = i + 2;
         }
 
-        // 建立 Mesh 物件
+        //建立 Mesh 物件
         CreateMeshObject(objName, finalVertices, finalUVs, triangles, center);
     }
 

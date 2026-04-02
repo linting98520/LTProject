@@ -153,6 +153,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _spawnObj: {fileID: 1889382339679319064, guid: 75ebcf599cfa85147ada2bce9061f414, type: 3}
   _spawnRate: 5
+  _amount: 100
 --- !u!4 &1762142260
 Transform:
   m_ObjectHideFlags: 0

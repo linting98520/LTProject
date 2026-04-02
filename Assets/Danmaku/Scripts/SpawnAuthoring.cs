@@ -7,6 +7,7 @@ public class SpawnAuthoring : MonoBehaviour
 {
     [SerializeField] private GameObject _spawnObj;
     [SerializeField] private float _spawnRate;
+    [SerializeField] private int _amount;
 
     public class SpawnBaker : Baker<SpawnAuthoring>
     {
@@ -15,10 +16,10 @@ public class SpawnAuthoring : MonoBehaviour
             if (authoring._spawnObj == null) return;
 
             var entity = GetEntity(TransformUsageFlags.Dynamic);
-            AddComponent(entity, new SpawnComponent
+            AddComponent(entity, new SpawnMultiComponent
             {
                 Prefab = GetEntity(authoring._spawnObj, TransformUsageFlags.Dynamic),
-                SpawnRate = authoring._spawnRate
+                AmountPerWave = authoring._amount
             });
 
             AddBuffer<SpawnedElement>(entity);

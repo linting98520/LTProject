@@ -21,7 +21,7 @@ public partial struct SpawnMultiComponent : IComponentData
 {
     public Entity Prefab;
     public int AmountPerWave;
-    public bool Init;
+    public float3 FirstObjPosition;
 }
 
 public struct SpawnRequest : IComponentData

@@ -19,8 +19,6 @@ public class UIButton_SpawnAuthoring : MonoBehaviour
             {
                 PrefabEntity = convertPrefab
             });
-
-            Debug.Log($"Add SpawnConfig...");
         }
     }
 }

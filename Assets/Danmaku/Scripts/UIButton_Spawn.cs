@@ -1,20 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Entities;
+using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
 using UnityEngine.UI;
 
-public struct SpawnConfig : IComponentData
-{
-    public Entity PrefabEntity;
-}
-
 public class UIButton_Spawn : MonoBehaviour
 {
     [SerializeField] private Button _button;
+    [SerializeField] private Button _clearButton;
 
-    [SerializeField] private int _spawnAmount = 1000;
+    [SerializeField] private int _spawnAmount;
+    [SerializeField] private float3 _firstObjPos = 0;
+    [SerializeField] private SpawnPatternUtility.SpawnPatternType _patternType;
 
     private void Start()
     {
@@ -32,12 +31,13 @@ public class UIButton_Spawn : MonoBehaviour
             SpawnConfig config = entityQuery.GetSingleton<SpawnConfig>();
             Entity entity = config.PrefabEntity;
 
-            Entity cmdEntity = entityManager.CreateEntity(typeof(SpawnMultiComponent));
-            entityManager.SetComponentData(cmdEntity, new SpawnMultiComponent()
+            Entity cmdEntity = entityManager.CreateEntity(typeof(EnemySpawnComponent));
+            entityManager.SetComponentData(cmdEntity, new EnemySpawnComponent()
             {
                 AmountPerWave = _spawnAmount,
                 Prefab = entity,
-                FirstObjPosition = 0
+                FirstObjPosition = _firstObjPos,
+                PatternType = _patternType
             });
         }
     }

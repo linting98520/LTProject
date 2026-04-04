@@ -69,28 +69,33 @@ public partial struct IssueRequestJob : IJobEntity
 {
     public EntityCommandBuffer.ParallelWriter Ecb;
 
-    private void Execute(Entity entity, [ChunkIndexInQuery] int sortKey, in SpawnMultiComponent spawnMulti)
+    private void Execute(Entity entity, [ChunkIndexInQuery] int sortKey, in EnemySpawnComponent spawnMulti)
     {
-        int itemsPerRow = 10;
-        int xOffset = 3;
-        int yOffset = 5;
-        float3 pos = spawnMulti.FirstObjPosition;
-
         for (int i = 0; i < spawnMulti.AmountPerWave; i++)
         {
-            int row = i % itemsPerRow;
-            int col = (int)math.floor(i / itemsPerRow);
-            float3 newPos = pos + new float3(row * xOffset, col * yOffset, 0);
-
+            float3 pos = SpawnPatternUtility.GetPosition(spawnMulti.PatternType, i, spawnMulti.AmountPerWave, spawnMulti.FirstObjPosition);
             Entity req = Ecb.CreateEntity(sortKey);
             Ecb.AddComponent(sortKey, req, new SpawnRequest
             {
                 PrefabToSpawn = spawnMulti.Prefab,
-                Position = newPos
+                Position = pos
             });
+
+            switch (spawnMulti.PatternType)
+            {
+                case SpawnPatternUtility.SpawnPatternType.Easy:
+                    Ecb.AddComponent<EasyPatternTag>(sortKey, req);
+                    break;
+                case SpawnPatternUtility.SpawnPatternType.Normal:
+                    Ecb.AddComponent<NormalPatternTag>(sortKey, req);
+                    break;
+                case SpawnPatternUtility.SpawnPatternType.Hard:
+                    Ecb.AddComponent<HardPatternTag>(sortKey, req);
+                    break;
+            }
         }
 
-        Ecb.RemoveComponent<SpawnMultiComponent>(sortKey, entity);
+        Ecb.RemoveComponent<EnemySpawnComponent>(sortKey, entity);
     }
 }
 
@@ -123,5 +128,24 @@ public partial struct SpawnWorkerJob : IJobEntity
         Ecb.SetComponent(sortKey, newEnemy, t);
 
         Ecb.DestroyEntity(sortKey, reqEntity);
+    }
+}
+
+//下次從這開始 改成泛型
+[BurstCompile]
+public partial struct DestroySpawnSystem : ISystem
+{
+    public void OnUpdate(ref SystemState state)
+    {
+        var ecb = new EntityCommandBuffer(Allocator.Temp);
+
+        foreach (var (request, entity) in SystemAPI.Query<SpawnRequest>().WithAll<EasyPatternTag>().WithEntityAccess())
+        {
+            ecb.DestroyEntity(entity);
+        }
+
+        ecb.Playback(state.EntityManager);
+
+        ecb.Dispose();
     }
 }

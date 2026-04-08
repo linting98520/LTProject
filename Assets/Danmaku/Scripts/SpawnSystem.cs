@@ -18,7 +18,7 @@ public partial struct SpawnSystem : ISystem
         var ecb = SystemAPI.GetSingleton<BeginSimulationEntityCommandBufferSystem.Singleton>()
             .CreateCommandBuffer(state.WorldUnmanaged).AsParallelWriter();
 
-        new EnemySpawnRequestJob { Ecb = ecb }.ScheduleParallel();
+        new SpawnRequestJob { Ecb = ecb }.ScheduleParallel();
     }
 }
 
@@ -26,13 +26,12 @@ public partial struct SpawnSystem : ISystem
 /// ¥Í¦¨Enemy
 /// </summary>
 [BurstCompile]
-public partial struct EnemySpawnRequestJob : IJobEntity
+public partial struct SpawnRequestJob : IJobEntity
 {
     public EntityCommandBuffer.ParallelWriter Ecb;
 
     private void Execute(Entity entity, [ChunkIndexInQuery] int sortKey, in EnemySpawnComponent compoment)
     {
-        Debug.Log($"Spawn => {compoment.PatternType.ToString()}");
         for (int i = 0; i < compoment.AmountPerWave; i++)
         {
             float3 pos = SpawnPatternUtility.GetPosition(compoment.PatternType, i, compoment.AmountPerWave, compoment.FirstObjPosition);
@@ -40,21 +39,8 @@ public partial struct EnemySpawnRequestJob : IJobEntity
             Ecb.AddComponent(sortKey, objEntity, new SpawnRequest
             {
                 PrefabToSpawn = compoment.Prefab,
-                Position = pos
+                Position = pos,
             });
-
-            switch (compoment.PatternType)
-            {
-                case SpawnPatternUtility.SpawnPatternType.Easy:
-                    Ecb.AddComponent<EnemyEasyPatternTag>(sortKey, objEntity);
-                    break;
-                case SpawnPatternUtility.SpawnPatternType.Normal:
-                    Ecb.AddComponent<EnemyNormalPatternTag>(sortKey, objEntity);
-                    break;
-                case SpawnPatternUtility.SpawnPatternType.Hard:
-                    Ecb.AddComponent<EnemyHardPatternTag>(sortKey, objEntity);
-                    break;
-            }
         }
 
         Ecb.RemoveComponent<EnemySpawnComponent>(sortKey, entity);
@@ -104,18 +90,21 @@ public abstract partial class DestroySystem<TTag, TCmd> : SystemBase
     where TTag : unmanaged, IComponentData
     where TCmd : unmanaged, IComponentData
 {
-    private EntityQuery _query;
+    private EntityQuery _targetQuery;
+    private EntityQuery _commandQuery;
 
     protected override void OnCreate()
     {
-        _query = GetEntityQuery(ComponentType.ReadOnly<TTag>(), ComponentType.ReadOnly<TCmd>());
-        RequireForUpdate(_query);
+        _targetQuery = GetEntityQuery(ComponentType.ReadOnly<TTag>());
+        _commandQuery = GetEntityQuery(ComponentType.ReadOnly<TCmd>());
+        RequireForUpdate(_commandQuery);
     }
 
     protected override void OnUpdate()
     {
         Debug.Log($"DestroySystem => {typeof(TTag).Name}");
-        EntityManager.DestroyEntity(_query);
+        EntityManager.DestroyEntity(_targetQuery);
+        EntityManager.DestroyEntity(_commandQuery);
     }
 }
 

@@ -38,8 +38,7 @@ public class UIButton_Spawn : MonoBehaviour
             {
                 AmountPerWave = _spawnAmount,
                 Prefab = entity,
-                FirstObjPosition = _firstObjPos,
-                PatternType = _patternType
+                FirstObjPosition = _firstObjPos
             });
         }
 
@@ -50,9 +49,9 @@ public class UIButton_Spawn : MonoBehaviour
     {
         return type switch
         {
-            SpawnPatternUtility.SpawnPatternType.Easy => config.EasyEnemyEntity,
-            SpawnPatternUtility.SpawnPatternType.Normal => config.NormalEnemyEntity,
-            SpawnPatternUtility.SpawnPatternType.Hard => config.HardEnemyEntity,
+            SpawnPatternUtility.SpawnPatternType.Enemy_Easy => config.EasyEnemyEntity,
+            SpawnPatternUtility.SpawnPatternType.Enemy_Normal => config.NormalEnemyEntity,
+            SpawnPatternUtility.SpawnPatternType.Enemy_Hard => config.HardEnemyEntity,
             _ => config.EasyEnemyEntity
         };
     }
@@ -67,20 +66,20 @@ public class UIButton_Spawn : MonoBehaviour
         else
             Debug.Log($"Spawn => {_patternType.ToString()} is NOT Exist");
 
+        ComponentType type = GetCommandComponent(_patternType);
+        entityManager.CreateEntity(type);
+
         query.Dispose();
-        //Type type = GetComponent(_patternType);
-        //entityManager.CreateEntity(type);
-        //Debug.Log($"DestroyTypeName = {type.Name}");
     }
 
-    private Type GetComponent(SpawnPatternUtility.SpawnPatternType type)
+    private ComponentType GetCommandComponent(SpawnPatternUtility.SpawnPatternType type)
     {
         return type switch
         {
-            SpawnPatternUtility.SpawnPatternType.Easy => typeof(EnemyEasyDeleteCommand),
-            SpawnPatternUtility.SpawnPatternType.Normal => typeof(EnemyNormalDeleteCommand),
-            SpawnPatternUtility.SpawnPatternType.Hard => typeof(EnemyHardDeleteCommand),
-            _ => typeof(EnemyEasyDeleteCommand)
+            SpawnPatternUtility.SpawnPatternType.Enemy_Easy => ComponentType.ReadWrite<EnemyEasyDeleteCommand>(),
+            SpawnPatternUtility.SpawnPatternType.Enemy_Normal => ComponentType.ReadWrite<EnemyNormalDeleteCommand>(),
+            SpawnPatternUtility.SpawnPatternType.Enemy_Hard => ComponentType.ReadWrite<EnemyHardDeleteCommand>(),
+            _ => ComponentType.ReadWrite<EnemyEasyDeleteCommand>()
         };
     }
 }

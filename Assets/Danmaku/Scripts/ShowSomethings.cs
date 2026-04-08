@@ -27,9 +27,9 @@ public class ShowSomethings : MonoBehaviour
     {
         return type switch
         {
-            SpawnPatternUtility.SpawnPatternType.Easy => typeof(EnemyEasyDeleteCommand),
-            SpawnPatternUtility.SpawnPatternType.Normal => typeof(EnemyNormalDeleteCommand),
-            SpawnPatternUtility.SpawnPatternType.Hard => typeof(EnemyHardDeleteCommand),
+            SpawnPatternUtility.SpawnPatternType.Enemy_Easy => typeof(EnemyEasyDeleteCommand),
+            SpawnPatternUtility.SpawnPatternType.Enemy_Normal => typeof(EnemyNormalDeleteCommand),
+            SpawnPatternUtility.SpawnPatternType.Enemy_Hard => typeof(EnemyHardDeleteCommand),
             _ => typeof(EnemyEasyDeleteCommand)
         };
     }
@@ -52,9 +52,9 @@ public class ShowSomethings : MonoBehaviour
     {
         return type switch
         {
-            SpawnPatternUtility.SpawnPatternType.Easy => typeof(EnemyEasyDeleteCommand),
-            SpawnPatternUtility.SpawnPatternType.Normal => typeof(EnemyNormalDeleteCommand),
-            SpawnPatternUtility.SpawnPatternType.Hard => typeof(EnemyHardDeleteCommand),
+            SpawnPatternUtility.SpawnPatternType.Enemy_Easy => typeof(EnemyEasyDeleteCommand),
+            SpawnPatternUtility.SpawnPatternType.Enemy_Normal => typeof(EnemyNormalDeleteCommand),
+            SpawnPatternUtility.SpawnPatternType.Enemy_Hard => typeof(EnemyHardDeleteCommand),
             _ => typeof(EnemyEasyDeleteCommand)
         };
     }

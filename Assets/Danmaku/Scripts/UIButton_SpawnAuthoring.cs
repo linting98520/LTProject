@@ -13,17 +13,12 @@ public class UIButton_SpawnAuthoring : MonoBehaviour
     {
         public override void Bake(UIButton_SpawnAuthoring authoring)
         {
-            Entity entity = GetEntity(TransformUsageFlags.Dynamic);
-
-            Entity easyPrefab = GetEntity(authoring.EasyEnemyObj, TransformUsageFlags.Dynamic);
-            Entity normalPrefab = GetEntity(authoring.NormalEnemyObj, TransformUsageFlags.Dynamic);
-            Entity hardPrefab = GetEntity(authoring.HardEnemyObj, TransformUsageFlags.Dynamic);
-
-            AddComponent(entity, new SpawnRegistry()
+            Entity entity = GetEntity(TransformUsageFlags.None);
+            AddComponent(entity, new SpawnRegistry
             {
-                EasyEnemyEntity = easyPrefab,
-                NormalEnemyEntity = normalPrefab,
-                HardEnemyEntity = hardPrefab,
+                EasyEnemyEntity = GetEntity(authoring.EasyEnemyObj, TransformUsageFlags.Dynamic),
+                NormalEnemyEntity = GetEntity(authoring.NormalEnemyObj, TransformUsageFlags.Dynamic),
+                HardEnemyEntity = GetEntity(authoring.HardEnemyObj, TransformUsageFlags.Dynamic),
             });
         }
     }

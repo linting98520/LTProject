@@ -5,7 +5,9 @@ using UnityEngine;
 
 public class UIButton_SpawnAuthoring : MonoBehaviour
 {
-    [SerializeField] private GameObject SpawnObj;
+    [SerializeField] private GameObject EasyEnemyObj;
+    [SerializeField] private GameObject NormalEnemyObj;
+    [SerializeField] private GameObject HardEnemyObj;
 
     private class UISpawnBtnBaker : Baker<UIButton_SpawnAuthoring>
     {
@@ -13,11 +15,15 @@ public class UIButton_SpawnAuthoring : MonoBehaviour
         {
             Entity entity = GetEntity(TransformUsageFlags.Dynamic);
 
-            Entity convertPrefab = GetEntity(authoring.SpawnObj, TransformUsageFlags.Dynamic);
+            Entity easyPrefab = GetEntity(authoring.EasyEnemyObj, TransformUsageFlags.Dynamic);
+            Entity normalPrefab = GetEntity(authoring.NormalEnemyObj, TransformUsageFlags.Dynamic);
+            Entity hardPrefab = GetEntity(authoring.HardEnemyObj, TransformUsageFlags.Dynamic);
 
-            AddComponent(entity, new SpawnConfig()
+            AddComponent(entity, new SpawnRegistry()
             {
-                PrefabEntity = convertPrefab
+                EasyEnemyEntity = easyPrefab,
+                NormalEnemyEntity = normalPrefab,
+                HardEnemyEntity = hardPrefab,
             });
         }
     }

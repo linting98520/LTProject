@@ -4,6 +4,11 @@ using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
 
+public struct SpawnedElement : IBufferElementData
+{
+    public Entity Value;
+}
+
 public class SpawnAuthoring : MonoBehaviour
 {
     [SerializeField] private GameObject _spawnObj;

@@ -1,20 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
 
-public struct SpawnComponent : IComponentData
+public struct SpawnRegistry : IComponentData
 {
-    public Entity Prefab;
-    public float SpawnRate;
-    public float NextSpawnTime;
-}
-
-public struct SpawnedElement : IBufferElementData
-{
-    public Entity Value;
+    public Entity EasyEnemyEntity;
+    public Entity NormalEnemyEntity;
+    public Entity HardEnemyEntity;
 }
 
 public struct EnemySpawnComponent : IComponentData
@@ -31,13 +27,14 @@ public struct SpawnRequest : IComponentData
     public float3 Position;
 }
 
-public struct SpawnConfig : IComponentData
-{
-    public Entity PrefabEntity;
-}
 
 #region SpawnPatternUtility.SpawnPatternType
-public struct EasyPatternTag : IComponentData { }
-public struct NormalPatternTag : IComponentData { }
-public struct HardPatternTag : IComponentData { }
+public struct EnemyEasyPatternTag : IComponentData { }
+public struct EnemyEasyDeleteCommand : IComponentData { }
+
+public struct EnemyNormalPatternTag : IComponentData { }
+public struct EnemyNormalDeleteCommand : IComponentData { }
+
+public struct EnemyHardPatternTag : IComponentData { }
+public struct EnemyHardDeleteCommand : IComponentData { }
 #endregion

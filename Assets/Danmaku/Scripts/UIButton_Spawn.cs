@@ -38,7 +38,8 @@ public class UIButton_Spawn : MonoBehaviour
             {
                 AmountPerWave = _spawnAmount,
                 Prefab = entity,
-                FirstObjPosition = _firstObjPos
+                FirstObjPosition = _firstObjPos,
+                PatternType = _patternType
             });
         }
 
@@ -61,10 +62,6 @@ public class UIButton_Spawn : MonoBehaviour
         var entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
 
         EntityQuery query = entityManager.CreateEntityQuery(ComponentType.ReadOnly<EnemyEasyPatternTag>());
-        if (!query.IsEmptyIgnoreFilter)
-            Debug.Log($"Spawn => {_patternType.ToString()} is Exist");
-        else
-            Debug.Log($"Spawn => {_patternType.ToString()} is NOT Exist");
 
         ComponentType type = GetCommandComponent(_patternType);
         entityManager.CreateEntity(type);

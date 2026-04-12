@@ -5,6 +5,12 @@ using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
 
+public struct MoveComponent : IComponentData
+{
+    public float Speed;
+    public float Threshold;
+}
+
 public class EnemyAuthoring : MonoBehaviour
 {
     [field: SerializeField] public float _enemyMoveSpeed { get; private set; }

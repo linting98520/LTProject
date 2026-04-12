@@ -7,7 +7,13 @@ using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
 
-public struct LinearMoveData : IComponentData
+public struct ShooterConfig : IComponentData
+{
+    public Entity Prefab;
+    public float FireRate;
+}
+
+public struct LinearBaseData : IComponentData
 {
     public float Speed;
     public float3 Direction;
@@ -30,7 +36,7 @@ public partial struct LinearMoveSystem : ISystem
 public partial struct LinearMoveJob : IJobEntity
 {
     public float DeltaTime;
-    public void Execute(LocalTransform localTransform, in LinearMoveData data)
+    public void Execute(ref LocalTransform localTransform, in LinearBaseData data)
     {
         localTransform.Position += data.Direction * data.Speed * DeltaTime;
     }

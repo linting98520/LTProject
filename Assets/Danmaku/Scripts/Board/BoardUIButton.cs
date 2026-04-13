@@ -10,16 +10,11 @@ public class BoardUIButton : MonoBehaviour
 
     [SerializeField] public Button _button;
 
-    public void Init(int id)
+    public void Init(int id, System.Action<int> clickEvent)
     {
         ID = id;
         if (_button == null)
             _button = GetComponent<Button>();
-        _button.onClick.AddListener(OnClickEvent);
-    }
-
-    private void OnClickEvent()
-    {
-
+        _button.onClick.AddListener(delegate { clickEvent.Invoke(ID); });
     }
 }

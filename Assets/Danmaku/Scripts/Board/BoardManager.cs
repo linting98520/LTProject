@@ -4,9 +4,6 @@ using UnityEngine.Events;
 
 public class BoardManager : MonoBehaviour
 {
-    private static BoardManager _instance;
-    public static BoardManager Instance => _instance;
-
     [Header("´Ñ½L¤Ø¤o³]©w")]
     [Range(2, 20)]
     public int Columns = 8;
@@ -27,11 +24,6 @@ public class BoardManager : MonoBehaviour
     private Cell[,] cells;
     private Cell hoveredCell;
     private Cell selectedCell;
-
-    private void Awake()
-    {
-        _instance = this;
-    }
 
     private void Start()
     {
@@ -84,27 +76,4 @@ public class BoardManager : MonoBehaviour
 
         return cell;
     }
-
-#if UNITY_EDITOR
-    private void OnValidate()
-    {
-        if (Application.isPlaying && Root != null)
-            GenerateBoard();
-    }
-#endif
-}
-
-[System.Serializable]
-public struct CellClickData
-{
-    public int Column;
-    public int Row;
-    public Vector3 WorldPosition;
-
-    public CellClickData(int col, int row, Vector3 pos)
-    {
-        Column = col; Row = row; WorldPosition = pos;
-    }
-
-    public override string ToString() => $"Cell({Column},{Row}) @ {WorldPosition}";
 }

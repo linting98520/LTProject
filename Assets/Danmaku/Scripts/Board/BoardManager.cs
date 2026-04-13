@@ -1,8 +1,12 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 
 public class BoardManager : MonoBehaviour
 {
+    private static BoardManager _instance;
+    public static BoardManager Instance => _instance;
+
     [Header("´Ñ½L¤Ø¤o³]©w")]
     [Range(2, 20)]
     public int Columns = 8;
@@ -23,6 +27,11 @@ public class BoardManager : MonoBehaviour
     private Cell[,] cells;
     private Cell hoveredCell;
     private Cell selectedCell;
+
+    private void Awake()
+    {
+        _instance = this;
+    }
 
     private void Start()
     {

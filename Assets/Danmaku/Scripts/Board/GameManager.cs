@@ -7,8 +7,9 @@ public class GameManager : MonoBehaviour
     private static GameManager _instance;
     public static GameManager Instance => _instance;
 
-    public BoardUI BoardUIController;
+    public DeckUIController BoardUIController;
     public BoardInputHandler InputHandler;
+    public ShooterSpawner ShooterSpawner;
 
     private void Awake()
     {
@@ -40,6 +41,7 @@ public class GameManager : MonoBehaviour
     public void SpawnShooter(Cell cell)
     {
         int id = BoardUIController.ReadySpawnID;
+        ShooterSpawner.Spawn(cell.transform.position, id);
     }
 
     public void InterruptSpawnShooter()

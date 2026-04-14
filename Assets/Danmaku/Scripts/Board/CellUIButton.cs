@@ -4,7 +4,7 @@ using System.ComponentModel;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class BoardUIButton : MonoBehaviour
+public class CellUIButton : MonoBehaviour
 {
     public int ID { get; private set; }
 

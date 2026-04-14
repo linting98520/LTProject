@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class BoardUI : MonoBehaviour
+public class DeckUIController : MonoBehaviour
 {
     public int Card01 = 10001; //Radial
     public int Card02 = 10002; //Orbit
@@ -11,7 +11,7 @@ public class BoardUI : MonoBehaviour
     public event Action BoardcastOfReadyBuild;
 
     [SerializeField] 
-    private List<BoardUIButton> boardUIButtons = new List<BoardUIButton>();
+    private List<CellUIButton> boardUIButtons = new List<CellUIButton>();
 
     public int ReadySpawnID { get; private set; }
 

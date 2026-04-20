@@ -2,11 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using Sirenix.OdinInspector;
 
 public class DeckUIController : MonoBehaviour
 {
-    public int Card01 = 10001; //Radial
-    public int Card02 = 10002; //Orbit
+    public int StartID = 1001;
+    [ReadOnly] public int Card01 = 1001; //Radial
+    [ReadOnly] public int Card02 = 1002; //Orbit
 
     public event Action BoardcastOfReadyBuild;
 
@@ -20,7 +22,7 @@ public class DeckUIController : MonoBehaviour
         ReadySpawnID = -1;
         for (int i = 0; i < boardUIButtons.Count; i++)
         {
-            boardUIButtons[i].Init(1001 + i, OnClick);
+            boardUIButtons[i].Init(StartID + i, OnClick);
         }
     }
 

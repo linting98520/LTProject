@@ -507,8 +507,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 104926ea048297e45a7be14ea1f1e7d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Card01: 10001
-  Card02: 10002
+  StartID: 1001
+  Card01: 1001
+  Card02: 1002
   boardUIButtons:
   - {fileID: 1806396800}
   - {fileID: 2023068887}
@@ -792,6 +793,7 @@ GameObject:
   - component: {fileID: 242860539}
   - component: {fileID: 242860541}
   - component: {fileID: 242860542}
+  - component: {fileID: 242860543}
   m_Layer: 0
   m_Name: BoardInputManager
   m_TagString: Untagged
@@ -811,6 +813,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 506e72821d067714d804874bbbc6fb50, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  BoardManager: {fileID: 242860541}
   CellLayerMask:
     serializedVersion: 2
     m_Bits: 55
@@ -846,10 +849,12 @@ MonoBehaviour:
   Columns: 10
   Rows: 10
   CellSize: 5
-  CellGap: 0.3
+  CellGap: 0
   CellHeight: 1
   CellObj: {fileID: 5001483826004832996, guid: 02f1f21af9ee468449704e7d30cae107, type: 3}
   Root: {fileID: 242860538}
+  MaterialNormal: {fileID: 2100000, guid: 3b47b5213dc3ece489144982871c34d0, type: 2}
+  MaterialHover: {fileID: 2100000, guid: 279bceaa112a6eb418f280766a6bdf70, type: 2}
 --- !u!114 &242860542
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -862,8 +867,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71247dcfe02b7e44b96c9ee6ed10344c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  BoardManager: {fileID: 242860541}
   BoardUIController: {fileID: 75399022}
   InputHandler: {fileID: 242860539}
+  ShooterSpawner: {fileID: 242860543}
+--- !u!114 &242860543
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 242860538}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 219767186ac7e384692108d4186b9250, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShooterDatabasePath: Database/ShooterDatabase
+  SpawnPosOffest: {x: 0, y: 3, z: 0}
 --- !u!1 &285420927
 GameObject:
   m_ObjectHideFlags: 0

@@ -16,6 +16,7 @@ public struct OrbitShooterConfig : IComponentData
     public Entity Prefab;
 
     public float Speed;
+    public float BulletLifetime;
 }
 
 [BurstCompile]
@@ -55,6 +56,11 @@ public partial struct OrbitShooterSpawnJob : IJobEntity
                     Radius = (x + 1) * 2,
                     Speed = config.Speed,
                     Angle = currentAngle
+                });
+
+                Ecb.AddComponent(sortKey, prefab, new ProjectileLifeTimeComponent
+                {
+                    RemainingTime = config.BulletLifetime
                 });
             }
         }

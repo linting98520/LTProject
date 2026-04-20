@@ -7,6 +7,7 @@ public class GameManager : MonoBehaviour
     private static GameManager _instance;
     public static GameManager Instance => _instance;
 
+    public BoardManager BoardManager;
     public DeckUIController BoardUIController;
     public BoardInputHandler InputHandler;
     public ShooterSpawner ShooterSpawner;
@@ -19,6 +20,7 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         BoardUIController.RegistReadyEvent(ReadyForBuild);
+        BoardManager.GenerateBoard();
     }
 
     private void OnEnable()

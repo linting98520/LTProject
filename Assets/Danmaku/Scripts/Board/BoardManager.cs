@@ -1,4 +1,4 @@
-using Unity.VisualScripting;
+using System;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -20,27 +20,17 @@ public class BoardManager : MonoBehaviour
     public GameObject CellObj;
     public GameObject Root;
 
+    public Material MaterialNormal;
+    public Material MaterialHover;
+
     // ¤º³¡ª¬ºA
     private Cell[,] cells;
-    private Cell hoveredCell;
-    private Cell selectedCell;
-
-    private void Start()
-    {
-        GenerateBoard();
-    }
+    public Cell HoveredCell { get; private set; }
 
     public void GenerateBoard()
     {
-        ClearBoard();
+        ClearCell();
         CreateCells();
-    }
-
-    private void ClearBoard()
-    {
-        cells = null;
-        hoveredCell = null;
-        selectedCell = null;
     }
 
     private void CreateCells()
@@ -71,9 +61,29 @@ public class BoardManager : MonoBehaviour
         go.transform.localPosition = position;
         go.transform.localScale = new Vector3(CellSize, CellHeight, CellSize);
 
-        Cell cell = go.AddComponent<Cell>();
+        Cell cell = go.GetComponent<Cell>();
         cell.Initialize(x, z);
 
         return cell;
+    }
+
+    public void EnterCell(Cell cell)
+    {
+        if (HoveredCell != null && HoveredCell != cell)
+        {
+            HoveredCell.SetMaterial(MaterialNormal);
+        }
+
+        cell.SetMaterial(MaterialHover);
+        HoveredCell = cell;
+    }
+
+    public void ClearCell()
+    {
+        if (HoveredCell != null)
+        {
+            HoveredCell.SetMaterial(MaterialNormal);
+            HoveredCell = null;
+        }
     }
 }

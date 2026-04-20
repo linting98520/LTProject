@@ -5,10 +5,11 @@ public class BoardInputHandler : MonoBehaviour
     public event System.Action<Cell> OnCellClicked;
     public event System.Action OnMissClicked;
 
-    public bool StartInput {get; private set;}
+    public BoardManager BoardManager;
     public LayerMask CellLayerMask = ~0;
     public float MaxRayDistance = 200f;
     public Camera TargetCamera;
+    public bool StartInput {get; private set;}
 
     private void Awake()
     {
@@ -32,22 +33,22 @@ public class BoardInputHandler : MonoBehaviour
 
         if (Physics.Raycast(ray, out RaycastHit hit, MaxRayDistance, CellLayerMask))
         {
-            if (Input.GetMouseButtonDown(0))
+            if (hit.transform.TryGetComponent(out Cell cell))
             {
-                if (hit.transform.TryGetComponent(out Cell cell))
-                {
-                    Debug.Log($"cell => Col = {cell.Column}, Row = {cell.Row}");
-                    OnCellClicked?.Invoke(cell);
-                }
-                else
-                {
-                    clickEmpty = true;
-                }
+                BoardManager.EnterCell(cell);
             }
         }
-        else if (Input.GetMouseButtonDown(0))
+        else
         {
-            clickEmpty = true;
+            BoardManager.ClearCell();
+        }
+        
+        if (Input.GetMouseButtonDown(0))
+        {
+            if (BoardManager.HoveredCell == null)
+                clickEmpty = true;
+            else
+                OnCellClicked?.Invoke(BoardManager.HoveredCell);
         }
 
         if (clickEmpty)

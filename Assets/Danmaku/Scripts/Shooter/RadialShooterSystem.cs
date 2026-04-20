@@ -20,6 +20,8 @@ public struct RadialShooterConfig : IComponentData
     //¯¥¼u¼Æ­È
     public float Speed;
     public float3 Direction;
+
+    public float BulletLifetime;
 }
 
 [BurstCompile]
@@ -64,6 +66,11 @@ public partial struct RadialShooterSpawnJob : IJobEntity
                 {
                     Speed = config.Speed,
                     Direction = dir
+                });
+
+                Ecb.AddComponent(sortKey, prefab, new ProjectileLifeTimeComponent
+                {
+                    RemainingTime = config.BulletLifetime
                 });
             }
             config.ElapsedTime = 0;

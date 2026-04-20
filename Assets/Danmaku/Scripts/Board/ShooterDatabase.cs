@@ -21,6 +21,7 @@ public class RadialShooterData : ShooterBaseData
     public int DirCount;
     public float FireRate;
     public float MoveSpeed;
+    public float BulletLifeTime;
 }
 
 [System.Serializable]
@@ -29,6 +30,7 @@ public class OrbitShooterData : ShooterBaseData
     public int DirCount;
     public int ObjectCount;
     public float RotateSpeed;
+    public float BulletLifeTime;
 }
 
 [CreateAssetMenu(fileName = "NewShooterDatabase", menuName = "Database/NewShooterDatabase")]

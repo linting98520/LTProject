@@ -29,7 +29,8 @@ public class RadialSpawner : IShooterSpawner
             EmissionDirectionCount = rd.DirCount,
             FireRate = rd.FireRate,
             Speed = rd.MoveSpeed,
-            ElapsedTime = rd.FireRate
+            ElapsedTime = rd.FireRate,
+            BulletLifetime = rd.BulletLifeTime
         });
     }
 }
@@ -52,7 +53,8 @@ public class OrbitSpawner : IShooterSpawner
             ShooterPosition = worldPos,
             EmissionDirectionCount = ob.DirCount,
             ObjectCount = ob.ObjectCount,
-            Speed = ob.RotateSpeed
+            Speed = ob.RotateSpeed,
+            BulletLifetime = ob.BulletLifeTime
         });
     }
 }
@@ -83,6 +85,7 @@ public class ShooterFactory
 public class ShooterSpawner : MonoBehaviour
 {
     public string ShooterDatabasePath;
+    public Vector3 SpawnPosOffest = Vector3.zero;
 
     private ShooterDatabase shooterDatabase = null;
     private ShooterFactory shooterFactory = null;
@@ -90,15 +93,28 @@ public class ShooterSpawner : MonoBehaviour
 
     private void Start()
     {
-        shooterDatabase = Resources.Load<ShooterDatabase>(ShooterDatabasePath); //先用Resources Load，之後改用其他載入方式
+        StartCoroutine(LoadShooterDB());
         shooterFactory = new ShooterFactory();
+    }
+
+    private IEnumerator LoadShooterDB()
+    {
+        var quest = Resources.LoadAsync<ShooterDatabase>(ShooterDatabasePath);
+        yield return quest;
+
+        if (quest == null)
+        {
+            Debug.LogWarning("ShooterDB Load Fail");
+        }
+
+        shooterDatabase = Resources.Load<ShooterDatabase>(ShooterDatabasePath); //先用Resources Load，之後改用其他載入方式
     }
 
     public void Spawn(Vector3 worldPos, int id)
     {
         if (shooterDatabase.TryGetShooterData(id, out ShooterBaseData data))
         {
-            shooterFactory.Spawn(worldPos, data);
+            shooterFactory.Spawn(worldPos + SpawnPosOffest, data);
         }
     }
 }

@@ -5,6 +5,7 @@ public class Cell : MonoBehaviour
 {
     public int Column { get; private set; }
     public int Row { get; private set; }
+    public bool IsBuild { get; private set; }
 
     private Renderer rend;
     private Material originalMaterial;
@@ -27,5 +28,10 @@ public class Cell : MonoBehaviour
     {
         if (rend != null && originalMaterial != null)
             rend.material = originalMaterial;
+    }
+
+    public void SetBuildingState(bool isBuild)
+    {
+        IsBuild = isBuild;
     }
 }

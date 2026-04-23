@@ -855,6 +855,7 @@ MonoBehaviour:
   Root: {fileID: 242860538}
   MaterialNormal: {fileID: 2100000, guid: 3b47b5213dc3ece489144982871c34d0, type: 2}
   MaterialHover: {fileID: 2100000, guid: 279bceaa112a6eb418f280766a6bdf70, type: 2}
+  MaterialCantBuild: {fileID: 2100000, guid: dce7d8f8906ec4e4fb08bd009f968e50, type: 2}
 --- !u!114 &242860542
 MonoBehaviour:
   m_ObjectHideFlags: 0

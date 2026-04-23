@@ -22,6 +22,7 @@ public class BoardManager : MonoBehaviour
 
     public Material MaterialNormal;
     public Material MaterialHover;
+    public Material MaterialCantBuild;
 
     // ¤º³¡ª¬ºA
     private Cell[,] cells;
@@ -74,7 +75,7 @@ public class BoardManager : MonoBehaviour
             HoveredCell.SetMaterial(MaterialNormal);
         }
 
-        cell.SetMaterial(MaterialHover);
+        cell.SetMaterial(cell.IsBuild ? MaterialCantBuild : MaterialHover);
         HoveredCell = cell;
     }
 

@@ -57,11 +57,6 @@ public partial struct OrbitShooterSpawnJob : IJobEntity
                     Speed = config.Speed,
                     Angle = currentAngle
                 });
-
-                Ecb.AddComponent(sortKey, prefab, new ProjectileLifeTimeComponent
-                {
-                    RemainingTime = config.BulletLifetime
-                });
             }
         }
         Ecb.DestroyEntity(sortKey, entity);

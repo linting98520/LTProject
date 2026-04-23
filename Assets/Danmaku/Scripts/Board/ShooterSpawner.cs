@@ -110,11 +110,13 @@ public class ShooterSpawner : MonoBehaviour
         shooterDatabase = Resources.Load<ShooterDatabase>(ShooterDatabasePath); //先用Resources Load，之後改用其他載入方式
     }
 
-    public void Spawn(Vector3 worldPos, int id)
+    public bool TryToSpawn(Vector3 worldPos, int id)
     {
         if (shooterDatabase.TryGetShooterData(id, out ShooterBaseData data))
         {
             shooterFactory.Spawn(worldPos + SpawnPosOffest, data);
+            return true;
         }
+        return false;
     }
 }

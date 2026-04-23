@@ -43,7 +43,11 @@ public class GameManager : MonoBehaviour
     public void SpawnShooter(Cell cell)
     {
         int id = BoardUIController.ReadySpawnID;
-        ShooterSpawner.Spawn(cell.transform.position, id);
+        if (cell?.IsBuild == false)
+        {
+            bool isbuild = ShooterSpawner.TryToSpawn(cell.transform.position, id);
+            cell.SetBuildingState(isbuild);
+        }
     }
 
     public void InterruptSpawnShooter()

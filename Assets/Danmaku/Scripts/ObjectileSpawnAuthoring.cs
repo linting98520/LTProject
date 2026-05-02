@@ -10,6 +10,7 @@ public class ObjectileSpawnAuthoring : MonoBehaviour
     [SerializeField] private GameObject HardEnemyObj;
     [SerializeField] private GameObject RadialObj;
     [SerializeField] private GameObject OrbitObj;
+    [SerializeField] private GameObject BlockObj;
 
     private class UISpawnBtnBaker : Baker<ObjectileSpawnAuthoring>
     {
@@ -21,8 +22,9 @@ public class ObjectileSpawnAuthoring : MonoBehaviour
                 EasyEnemyEntity = GetEntity(authoring.EasyEnemyObj, TransformUsageFlags.Dynamic),
                 NormalEnemyEntity = GetEntity(authoring.NormalEnemyObj, TransformUsageFlags.Dynamic),
                 HardEnemyEntity = GetEntity(authoring.HardEnemyObj, TransformUsageFlags.Dynamic),
-                RadialEntity = GetEntity(authoring.RadialObj, TransformUsageFlags.Dynamic),
-                OrbitEntity = GetEntity(authoring.OrbitObj, TransformUsageFlags.Dynamic),
+                RadialBulletEntity = GetEntity(authoring.RadialObj, TransformUsageFlags.Dynamic),
+                OrbitBulletEntity = GetEntity(authoring.OrbitObj, TransformUsageFlags.Dynamic),
+                BlockEntity = GetEntity(authoring.BlockObj, TransformUsageFlags.Dynamic)
             });
         }
     }

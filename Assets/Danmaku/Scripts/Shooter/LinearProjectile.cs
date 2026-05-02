@@ -1,11 +1,7 @@
-using JetBrains.Annotations;
-using System.Collections;
-using System.Collections.Generic;
 using Unity.Burst;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
-using UnityEngine;
 
 public struct LinearMoveData : IComponentData
 {
@@ -16,6 +12,12 @@ public struct LinearMoveData : IComponentData
 [BurstCompile]
 public partial struct LinearMoveSystem : ISystem
 {
+    [BurstCompile]
+    public void OnCreate(ref SystemState state)
+    {
+        state.RequireForUpdate<LinearMoveData>();
+    }
+
     [BurstCompile]
     public void OnUpdate(ref SystemState state) 
     {

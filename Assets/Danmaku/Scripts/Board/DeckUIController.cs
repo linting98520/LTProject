@@ -9,6 +9,7 @@ public class DeckUIController : MonoBehaviour
     public int StartID = 1001;
     [ReadOnly] public int Card01 = 1001; //Radial
     [ReadOnly] public int Card02 = 1002; //Orbit
+    [ReadOnly] public int Card03 = 1003; //Block
 
     public event Action BoardcastOfReadyBuild;
 

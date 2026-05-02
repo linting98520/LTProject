@@ -20,8 +20,14 @@ public struct OrbitShooterConfig : IComponentData
 }
 
 [BurstCompile]
-public partial struct OrbitShooterSystem : ISystem
+public partial struct OrbitShooterSpawnSystem : ISystem
 {
+    [BurstCompile]
+    public void OnCreate(ref SystemState state)
+    {
+        state.RequireForUpdate<OrbitShooterConfig>();
+    }
+
     [BurstCompile]
     public void OnUpdate(ref SystemState state) 
     {

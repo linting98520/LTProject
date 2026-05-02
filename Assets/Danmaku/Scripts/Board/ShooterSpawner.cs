@@ -1,30 +1,32 @@
-using Mono.Cecil;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Entities;
 using Unity.Transforms;
 using UnityEngine;
-using System;
 
-public interface IShooterSpawner
+public abstract class ShooterSpawnerBase
 {
-    void Spawn(Vector3 worldPos, ShooterBaseData data);
-}
-
-public class RadialSpawner : IShooterSpawner
-{
-    public void Spawn(Vector3 worldPos, ShooterBaseData data)
+    public virtual void Spawn(Vector3 worldPos, ShooterBaseData data)
     {
-        RadialShooterData rd = data as RadialShooterData;
-
         var manager = World.DefaultGameObjectInjectionWorld.EntityManager;
         EntityQuery entityQuery = manager.CreateEntityQuery(typeof(SpawnRegistry));
         SpawnRegistry config = entityQuery.GetSingleton<SpawnRegistry>();
+        SetComponent(manager, config, worldPos, data);
+    }
 
+    public abstract void SetComponent(EntityManager manager, SpawnRegistry config, Vector3 worldPos, ShooterBaseData data);
+}
+
+public class RadialSpawner : ShooterSpawnerBase
+{
+    public override void SetComponent(EntityManager manager, SpawnRegistry config, Vector3 worldPos, ShooterBaseData data)
+    {
+        RadialShooterData rd = data as RadialShooterData;
         var entity = manager.CreateEntity(typeof(RadialShooterConfig), typeof(LocalTransform));
         manager.SetComponentData(entity, new RadialShooterConfig
         {
-            Prefab = config.RadialEntity,
+            Prefab = config.RadialBulletEntity,
             ShooterPosition = worldPos,
             EmissionDirectionCount = rd.DirCount,
             FireRate = rd.FireRate,
@@ -35,21 +37,15 @@ public class RadialSpawner : IShooterSpawner
     }
 }
 
-public class OrbitSpawner : IShooterSpawner
+public class OrbitSpawner : ShooterSpawnerBase
 {
-    public void Spawn(Vector3 worldPos, ShooterBaseData data)
+    public override void SetComponent(EntityManager manager, SpawnRegistry config, Vector3 worldPos, ShooterBaseData data)
     {
         OrbitShooterData ob = data as OrbitShooterData;
-
-        var manager = World.DefaultGameObjectInjectionWorld.EntityManager;
-
-        EntityQuery entityQuery = manager.CreateEntityQuery(typeof(SpawnRegistry));
-        SpawnRegistry config = entityQuery.GetSingleton<SpawnRegistry>();
-
         var entity = manager.CreateEntity(typeof(OrbitShooterConfig), typeof(LocalTransform));
         manager.SetComponentData(entity, new OrbitShooterConfig
         {
-            Prefab = config.OrbitEntity,
+            Prefab = config.OrbitBulletEntity,
             ShooterPosition = worldPos,
             EmissionDirectionCount = ob.DirCount,
             ObjectCount = ob.ObjectCount,
@@ -58,24 +54,37 @@ public class OrbitSpawner : IShooterSpawner
         });
     }
 }
+public class BlockSpanwer : ShooterSpawnerBase
+{
+    public override void SetComponent(EntityManager manager, SpawnRegistry config, Vector3 worldPos, ShooterBaseData data)
+    {
+        var entity = manager.CreateEntity(typeof(BlockData), typeof(LocalTransform));
+        manager.SetComponentData(entity, new BlockData
+        {
+            Prefab = config.BlockEntity,
+            SpawnPos = worldPos
+        });
+    }
+}
 
 public class ShooterFactory
 {
-    private Dictionary<System.Type, IShooterSpawner> shooterDic = new Dictionary<System.Type, IShooterSpawner>();
+    private Dictionary<System.Type, ShooterSpawnerBase> shooterDic = new Dictionary<System.Type, ShooterSpawnerBase>();
 
     public ShooterFactory()
     {
-        shooterDic = new Dictionary<Type, IShooterSpawner>()
+        shooterDic = new Dictionary<Type, ShooterSpawnerBase>()
         {
             { typeof(RadialShooterData), new RadialSpawner()},
-            { typeof(OrbitShooterData), new OrbitSpawner()}
+            { typeof(OrbitShooterData), new OrbitSpawner()},
+            { typeof(ShooterBaseData), new BlockSpanwer()}
         };
     }
 
     public void Spawn(Vector3 worldPos, ShooterBaseData data)
     {
         Type type = data.GetType();
-        if (shooterDic.TryGetValue(type, out IShooterSpawner spawner))
+        if (shooterDic.TryGetValue(type, out ShooterSpawnerBase spawner))
         {
             spawner.Spawn(worldPos, data);
         }

@@ -25,6 +25,9 @@ public class ShooterDatabaseEditor : Editor
 
             if (GUILayout.Button("＋ Add Orbit", GUILayout.Height(24)))
                 AddEntry(listProp, new OrbitShooterData { ShooterType = ShooterEnum.Orbit });
+
+            if (GUILayout.Button("＋ Add Block", GUILayout.Height(24)))
+                AddEntry(listProp, new ShooterBaseData { ShooterType = ShooterEnum.Block });
         }
 
         EditorGUILayout.Space(6);

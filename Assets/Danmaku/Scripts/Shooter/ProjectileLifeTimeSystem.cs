@@ -13,6 +13,12 @@ public struct ProjectileLifeTimeComponent : IComponentData
 public partial struct ProjectileLifeTimeSystem : ISystem
 {
     [BurstCompile]
+    public void OnCreate(ref SystemState state)
+    {
+        state.RequireForUpdate<ProjectileLifeTimeComponent>();
+    }
+
+    [BurstCompile]
     public void OnUpdate(ref SystemState state) 
     {
         var ecb = SystemAPI.GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>().CreateCommandBuffer(state.WorldUnmanaged).AsParallelWriter();

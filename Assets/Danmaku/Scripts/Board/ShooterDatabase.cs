@@ -5,7 +5,8 @@ using UnityEngine;
 public enum ShooterEnum
 {
     Radial,
-    Orbit
+    Orbit,
+    Block
 }
 
 [System.Serializable]

@@ -19,7 +19,6 @@ public struct RadialShooterConfig : IComponentData
 
     //¯¥¼u¼Æ­È
     public float Speed;
-    public float3 Direction;
 
     public float BulletLifetime;
 }
@@ -27,6 +26,12 @@ public struct RadialShooterConfig : IComponentData
 [BurstCompile]
 public partial struct RadialShooterSpawnSystem : ISystem
 {
+    [BurstCompile]
+    public void OnCreate(ref SystemState state)
+    {
+        state.RequireForUpdate<RadialShooterConfig>();
+    }
+
     [BurstCompile]
     public void OnUpdate(ref SystemState state) 
     {

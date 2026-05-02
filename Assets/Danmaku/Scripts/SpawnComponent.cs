@@ -11,8 +11,9 @@ public struct SpawnRegistry : IComponentData
     public Entity EasyEnemyEntity;
     public Entity NormalEnemyEntity;
     public Entity HardEnemyEntity;
-    public Entity RadialEntity;
-    public Entity OrbitEntity;
+    public Entity RadialBulletEntity;
+    public Entity OrbitBulletEntity;
+    public Entity BlockEntity;
 }
 
 public struct EnemySpawnComponent : IComponentData

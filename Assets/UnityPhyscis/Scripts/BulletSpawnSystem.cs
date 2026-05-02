@@ -6,10 +6,8 @@ using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
 
-[BurstCompile]
 public partial struct BulletSpawnSystem : ISystem
 {
-    [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
         if (!Input.GetKeyDown(KeyCode.F))

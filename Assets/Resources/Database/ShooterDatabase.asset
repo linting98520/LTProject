@@ -15,9 +15,15 @@ MonoBehaviour:
   shooterDatas:
   - rid: 7766517250037383168
   - rid: 7766517385507635200
+  - rid: 2146693150612389888
   references:
     version: 2
     RefIds:
+    - rid: 2146693150612389888
+      type: {class: ShooterBaseData, ns: , asm: Assembly-CSharp}
+      data:
+        ShooterType: 2
+        ID: 1003
     - rid: 7766517250037383168
       type: {class: RadialShooterData, ns: , asm: Assembly-CSharp}
       data:

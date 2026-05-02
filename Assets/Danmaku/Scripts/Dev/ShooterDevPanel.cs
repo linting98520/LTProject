@@ -31,7 +31,7 @@ public class ShooterDevPanel : MonoBehaviour
         var entity = manager.CreateEntity(typeof(RadialShooterConfig), typeof(LocalTransform)); 
         manager.SetComponentData(entity, new RadialShooterConfig
         {
-            Prefab = config.RadialEntity,
+            Prefab = config.RadialBulletEntity,
             ShooterPosition = RadialPosition,
             EmissionDirectionCount = RadialDirCount,
             FireRate = RadialFireRate,
@@ -63,7 +63,7 @@ public class ShooterDevPanel : MonoBehaviour
         var entity = manager.CreateEntity(typeof(OrbitShooterConfig), typeof(LocalTransform));
         manager.SetComponentData(entity, new OrbitShooterConfig
         {
-            Prefab = config.OrbitEntity,
+            Prefab = config.OrbitBulletEntity,
             ShooterPosition = OrbitPosition,
             EmissionDirectionCount = OrbitDirCount,
             ObjectCount = ObjectCount,

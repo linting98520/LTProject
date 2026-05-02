@@ -5,6 +5,7 @@ using Unity.Burst;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
+using UnityEditor.Rendering.LookDev;
 using UnityEngine;
 
 public struct OrbitMoveData : IComponentData
@@ -18,6 +19,12 @@ public struct OrbitMoveData : IComponentData
 [BurstCompile]
 public partial struct OrbitMoveSystem : ISystem
 {
+    [BurstCompile]
+    public void OnCreate(ref SystemState state)
+    {
+        state.RequireForUpdate<OrbitMoveData>();
+    }
+
     [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {

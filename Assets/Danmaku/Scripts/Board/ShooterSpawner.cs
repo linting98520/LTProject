@@ -93,7 +93,6 @@ public class ShooterFactory
 
 public class ShooterSpawner : MonoBehaviour
 {
-    public string ShooterDatabasePath;
     public Vector3 SpawnPosOffest = Vector3.zero;
 
     private ShooterDatabase shooterDatabase = null;
@@ -102,21 +101,12 @@ public class ShooterSpawner : MonoBehaviour
 
     private void Start()
     {
-        StartCoroutine(LoadShooterDB());
         shooterFactory = new ShooterFactory();
     }
 
-    private IEnumerator LoadShooterDB()
+    public void InjectShooterDB(ShooterDatabase database)
     {
-        var quest = Resources.LoadAsync<ShooterDatabase>(ShooterDatabasePath);
-        yield return quest;
-
-        if (quest == null)
-        {
-            Debug.LogWarning("ShooterDB Load Fail");
-        }
-
-        shooterDatabase = Resources.Load<ShooterDatabase>(ShooterDatabasePath); //先用Resources Load，之後改用其他載入方式
+        shooterDatabase  =database;
     }
 
     public bool TryToSpawn(Vector3 worldPos, int id)

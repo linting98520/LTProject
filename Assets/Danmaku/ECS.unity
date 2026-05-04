@@ -798,7 +798,7 @@ GameObject:
   - component: {fileID: 242860542}
   - component: {fileID: 242860543}
   m_Layer: 0
-  m_Name: BoardInputManager
+  m_Name: GameManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -875,6 +875,8 @@ MonoBehaviour:
   BoardUIController: {fileID: 75399022}
   InputHandler: {fileID: 242860539}
   ShooterSpawner: {fileID: 242860543}
+  ShooterDBPath: Database/ShooterDatabase
+  LoadPlayerPath: 
 --- !u!114 &242860543
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Threading.Tasks;
 
 public class GameManager : MonoBehaviour
 {
@@ -12,15 +13,22 @@ public class GameManager : MonoBehaviour
     public BoardInputHandler InputHandler;
     public ShooterSpawner ShooterSpawner;
 
+    public string ShooterDBPath;
+    public string LoadPlayerPath;
+
     private void Awake()
     {
         _instance = this;
     }
 
-    private void Start()
+    private async void Start()
     {
+        await new LoadShooterDatabase(ShooterDBPath, ShooterSpawner.InjectShooterDB).ExecuteAsync();
+
         BoardUIController.RegistReadyEvent(ReadyForBuild);
         BoardManager.GenerateBoard();
+
+        //await new LoadPlayer(LoadPlayerPath, null).ExecuteAsync();
     }
 
     private void OnEnable()

@@ -1,53 +1,61 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
+[RequireComponent(typeof(Collider))]
 public class PlayerController : MonoBehaviour
 {
-    [Header("移動設定")]
+    [Header("移動")]
+    [Tooltip("移動速度（公尺/秒）")]
     public float MoveSpeed = 5f;
 
-    [Header("座標軸設定")]
-    [Tooltip("勾選代表在 XZ 平面移動（俯視角）；不勾代表 XY 平面（2D / 平台）")]
-    public bool MoveOnXZ = true;
+    [Header("旋轉")]
+    [Tooltip("每秒最多轉幾度")]
+    public float RotationSpeed = 720f;
 
     private Rigidbody rb;
-    private Vector3 inputDir;   // Update 讀輸入、FixedUpdate 套用
+    private Vector3 inputDir;
 
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
+
+        rb.constraints = RigidbodyConstraints.FreezeRotationX
+                       | RigidbodyConstraints.FreezeRotationZ;
     }
 
     void Update()
     {
-        // 1. 讀輸入（Update 跑得快，輸入反應準）
-        float h = 0f;
-        float v = 0f;
+        float h = 0f, v = 0f;
         if (Input.GetKey(KeyCode.A)) h -= 1f;
         if (Input.GetKey(KeyCode.D)) h += 1f;
         if (Input.GetKey(KeyCode.W)) v += 1f;
         if (Input.GetKey(KeyCode.S)) v -= 1f;
 
-        Vector3 dir = MoveOnXZ
-            ? new Vector3(h, 0f, v)
-            : new Vector3(h, v, 0f);
-
-        if (dir.sqrMagnitude > 1f)
-            dir.Normalize();
-
+        Vector3 dir = new Vector3(h, 0f, v);
+        if (dir.sqrMagnitude > 1f) dir.Normalize();   // 對角線 normalize
         inputDir = dir;
     }
 
     void FixedUpdate()
     {
-        // 2. 套用速度（FixedUpdate 跟物理引擎同步，避免抖動）
         Vector3 horizontalVel = inputDir * MoveSpeed;
-
-        // 保留 Y 速度（重力 / 跳躍），只改水平
         Vector3 currentVel = rb.velocity;
-        if (MoveOnXZ)
-            rb.velocity = new Vector3(horizontalVel.x, currentVel.y, horizontalVel.z);
-        else
-            rb.velocity = new Vector3(horizontalVel.x, horizontalVel.y, currentVel.z);
+
+        rb.velocity = new Vector3(
+            horizontalVel.x,
+            currentVel.y,
+            horizontalVel.z
+        );
+
+        if (inputDir.sqrMagnitude > 0.01f)
+        {
+            Quaternion target = Quaternion.LookRotation(inputDir, Vector3.up);
+            Quaternion newRot = Quaternion.RotateTowards(
+                rb.rotation,
+                target,
+                RotationSpeed * Time.fixedDeltaTime
+            );
+            rb.MoveRotation(newRot);
+        }
     }
 }

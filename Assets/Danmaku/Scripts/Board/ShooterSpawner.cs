@@ -2,29 +2,38 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Entities;
+using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
 
 public abstract class ShooterSpawnerBase
 {
-    public virtual void Spawn(Vector3 worldPos, ShooterBaseData data)
+    public virtual void Spawn(Vector3 worldPos, float scale, ShooterBaseData data)
     {
         var manager = World.DefaultGameObjectInjectionWorld.EntityManager;
         EntityQuery entityQuery = manager.CreateEntityQuery(typeof(SpawnRegistry));
         SpawnRegistry config = entityQuery.GetSingleton<SpawnRegistry>();
-        SetComponent(manager, config, worldPos, data);
+        SetComponent(manager, config, worldPos, scale, data);
     }
 
-    public abstract void SetComponent(EntityManager manager, SpawnRegistry config, Vector3 worldPos, ShooterBaseData data);
+    public virtual void SetSpawnPos(EntityManager manager, Entity entity, Vector3 worldPos)
+    {
+        LocalTransform lt = manager.GetComponentData<LocalTransform>(entity);
+        lt.Position = worldPos;
+        manager.SetComponentData(entity, lt);
+    }
+
+    public abstract void SetComponent(EntityManager manager, SpawnRegistry config, Vector3 worldPos, float scale, ShooterBaseData data);
 }
 
 public class RadialSpawner : ShooterSpawnerBase
 {
-    public override void SetComponent(EntityManager manager, SpawnRegistry config, Vector3 worldPos, ShooterBaseData data)
+    public override void SetComponent(EntityManager manager, SpawnRegistry config, Vector3 worldPos, float scale, ShooterBaseData data)
     {
         RadialShooterData rd = data as RadialShooterData;
-        var entity = manager.CreateEntity(typeof(RadialShooterConfig), typeof(LocalTransform));
-        manager.SetComponentData(entity, new RadialShooterConfig
+        Entity shooter = manager.Instantiate(config.RadialShooterEntity);
+        SetSpawnPos(manager, shooter, worldPos);
+        manager.SetComponentData(shooter, new RadialShooterConfig
         {
             Prefab = config.RadialBulletEntity,
             ShooterPosition = worldPos,
@@ -34,16 +43,21 @@ public class RadialSpawner : ShooterSpawnerBase
             ElapsedTime = rd.FireRate,
             BulletLifetime = rd.BulletLifeTime
         });
+        manager.SetComponentData(shooter, new HealthData
+        {
+            Life = data.Life
+        });
     }
 }
 
 public class OrbitSpawner : ShooterSpawnerBase
 {
-    public override void SetComponent(EntityManager manager, SpawnRegistry config, Vector3 worldPos, ShooterBaseData data)
+    public override void SetComponent(EntityManager manager, SpawnRegistry config, Vector3 worldPos, float scale, ShooterBaseData data)
     {
         OrbitShooterData ob = data as OrbitShooterData;
-        var entity = manager.CreateEntity(typeof(OrbitShooterConfig), typeof(LocalTransform));
-        manager.SetComponentData(entity, new OrbitShooterConfig
+        Entity shooter = manager.Instantiate(config.OrbitShooterEntity);
+        SetSpawnPos(manager, shooter, worldPos);
+        manager.SetComponentData(shooter, new OrbitShooterConfig
         {
             Prefab = config.OrbitBulletEntity,
             ShooterPosition = worldPos,
@@ -52,16 +66,20 @@ public class OrbitSpawner : ShooterSpawnerBase
             Speed = ob.RotateSpeed,
             BulletLifetime = ob.BulletLifeTime
         });
+        manager.SetComponentData(shooter, new HealthData
+        {
+            Life = data.Life
+        });
     }
 }
 public class BlockSpanwer : ShooterSpawnerBase
 {
-    public override void SetComponent(EntityManager manager, SpawnRegistry config, Vector3 worldPos, ShooterBaseData data)
+    public override void SetComponent(EntityManager manager, SpawnRegistry config, Vector3 worldPos, float scale, ShooterBaseData data)
     {
-        var entity = manager.CreateEntity(typeof(BlockData), typeof(LocalTransform));
-        manager.SetComponentData(entity, new BlockData
+        Entity block = manager.Instantiate(config.BlockEntity);
+        SetSpawnPos(manager, block, worldPos);
+        manager.SetComponentData(block, new BlockData
         {
-            Prefab = config.BlockEntity,
             SpawnPos = worldPos
         });
     }
@@ -81,12 +99,12 @@ public class ShooterFactory
         };
     }
 
-    public void Spawn(Vector3 worldPos, ShooterBaseData data)
+    public void Spawn(Vector3 worldPos, float scale, ShooterBaseData data)
     {
         Type type = data.GetType();
         if (shooterDic.TryGetValue(type, out ShooterSpawnerBase spawner))
         {
-            spawner.Spawn(worldPos, data);
+            spawner.Spawn(worldPos, scale, data);
         }
     }
 }
@@ -94,6 +112,7 @@ public class ShooterFactory
 public class ShooterSpawner : MonoBehaviour
 {
     public Vector3 SpawnPosOffest = Vector3.zero;
+    public float SpawnScale = 1;
 
     private ShooterDatabase shooterDatabase = null;
     private ShooterFactory shooterFactory = null;
@@ -113,7 +132,7 @@ public class ShooterSpawner : MonoBehaviour
     {
         if (shooterDatabase.TryGetShooterData(id, out ShooterBaseData data))
         {
-            shooterFactory.Spawn(worldPos + SpawnPosOffest, data);
+            shooterFactory.Spawn(worldPos + SpawnPosOffest, SpawnScale, data);
             return true;
         }
         return false;

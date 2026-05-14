@@ -155,7 +155,9 @@ MonoBehaviour:
   NormalEnemyObj: {fileID: 1889382339679319064, guid: 769e655e36b834743a779c938aa11cc2, type: 3}
   HardEnemyObj: {fileID: 1889382339679319064, guid: f04364c2a052ecb4a9b6efaa8d8d6d72, type: 3}
   RadialObj: {fileID: 4258173830581364943, guid: 89aef9c9ce7b4bd4180fce2dd0119f9d, type: 3}
+  RadialTowerObj: {fileID: 3193707408088430525, guid: 41e013812f38bdd4a90880cfd7b8b3d6, type: 3}
   OrbitObj: {fileID: 4258173830581364943, guid: 1a442bd07694ddf46a5beb4c66853530, type: 3}
+  OrbitTowerObj: {fileID: 3193707408088430525, guid: 7a15474c7793e174883446a815f3198e, type: 3}
   BlockObj: {fileID: 3193707408088430525, guid: 2a5f7ebfe41c38945b62896ca58bd9a1, type: 3}
 --- !u!4 &620784558
 Transform:

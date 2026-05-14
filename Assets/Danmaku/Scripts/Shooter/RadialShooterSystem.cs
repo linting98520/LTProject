@@ -63,19 +63,24 @@ public partial struct RadialShooterSpawnJob : IJobEntity
                 float3 dir = new float3(math.cos(currentAngle), 0, math.sin(currentAngle));
                 quaternion rotation = quaternion.LookRotationSafe(dir, math.up());
 
-                float3 spawnPosition = config.ShooterPosition + (dir * 2);
+                float3 spawnPosition = config.ShooterPosition + dir;
 
                 Entity prefab = Ecb.Instantiate(sortKey, config.Prefab);
                 Ecb.SetComponent(sortKey, prefab, LocalTransform.FromPositionRotation(spawnPosition, rotation));
-                Ecb.AddComponent(sortKey, prefab, new LinearMoveData
+                Ecb.SetComponent(sortKey, prefab, new LinearMoveData
                 {
                     Speed = config.Speed,
                     Direction = dir
                 });
 
-                Ecb.AddComponent(sortKey, prefab, new ProjectileLifeTimeComponent
+                Ecb.SetComponent(sortKey, prefab, new ProjectileLifeTimeData
                 {
                     RemainingTime = config.BulletLifetime
+                });
+
+                Ecb.SetComponent(sortKey, prefab, new NextPosition
+                {
+                    Value = spawnPosition
                 });
             }
             config.ElapsedTime = 0;

@@ -28,7 +28,10 @@ public class GameManager : MonoBehaviour
         BoardUIController.RegistReadyEvent(ReadyForBuild);
         BoardManager.GenerateBoard();
 
-        //await new LoadPlayer(LoadPlayerPath, null).ExecuteAsync();
+        LoadPlayer loadPlayer = new LoadPlayer(LoadPlayerPath, null);
+        await loadPlayer.ExecuteAsync();
+        GameObject playerObj = Instantiate(loadPlayer.Asset.gameObject);
+        playerObj.transform.position = new Vector3(0, 8, 0);
     }
 
     private void OnEnable()

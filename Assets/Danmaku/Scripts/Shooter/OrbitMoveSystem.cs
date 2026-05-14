@@ -5,7 +5,6 @@ using Unity.Burst;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
-using UnityEditor.Rendering.LookDev;
 using UnityEngine;
 
 public struct OrbitMoveData : IComponentData
@@ -40,13 +39,14 @@ public partial struct OrbitMoveJob : IJobEntity
 {
     public float DeltaTime;
 
-    private void Execute(ref LocalTransform transform, ref OrbitMoveData orbit)
+    private void Execute(ref LocalTransform transform, ref OrbitMoveData orbit, ref NextPosition next)
     {
         orbit.Angle += orbit.Speed * DeltaTime;
 
         float x = math.cos(orbit.Angle) * orbit.Radius;
         float z = math.sin(orbit.Angle) * orbit.Radius;
 
-        transform.Position = orbit.Center + new float3(x, 0, z);
+        //移動會在 HitMoveJob 執行
+        next.Value = orbit.Center + new float3(x, 0, z);
     }
 }

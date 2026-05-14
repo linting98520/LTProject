@@ -4,7 +4,7 @@ using Unity.Burst;
 using Unity.Entities;
 using UnityEngine;
 
-public partial struct HealthData : IComponentData
+public struct HealthData : IComponentData
 {
     public int Life;
 }

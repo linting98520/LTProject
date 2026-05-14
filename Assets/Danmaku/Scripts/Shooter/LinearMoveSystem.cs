@@ -1,6 +1,7 @@
 using Unity.Burst;
 using Unity.Entities;
 using Unity.Mathematics;
+using Unity.Physics.Systems;
 using Unity.Transforms;
 
 public struct LinearMoveData : IComponentData
@@ -10,6 +11,8 @@ public struct LinearMoveData : IComponentData
 }
 
 [BurstCompile]
+[UpdateInGroup(typeof(TransformSystemGroup))]
+[UpdateBefore(typeof(HitMoveSystem))]
 public partial struct LinearMoveSystem : ISystem
 {
     [BurstCompile]
@@ -32,8 +35,9 @@ public partial struct LinearMoveSystem : ISystem
 public partial struct LinearMoveJob : IJobEntity
 {
     public float DeltaTime;
-    public void Execute(ref LocalTransform localTransform, in LinearMoveData data)
+    public void Execute(ref LocalTransform localTransform, in LinearMoveData data, ref NextPosition next)
     {
-        localTransform.Position += data.Direction * data.Speed * DeltaTime;
+        //localTransform.Position += data.Direction * data.Speed * DeltaTime;
+        next.Value = localTransform.Position + (data.Direction * data.Speed * DeltaTime);
     }
 }

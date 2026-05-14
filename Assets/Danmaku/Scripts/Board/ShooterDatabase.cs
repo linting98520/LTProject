@@ -14,6 +14,7 @@ public class ShooterBaseData
 {
     public ShooterEnum ShooterType;
     public int ID;
+    public int Life;
 }
 
 [System.Serializable]

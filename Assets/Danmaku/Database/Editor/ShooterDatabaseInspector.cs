@@ -2,7 +2,6 @@
 using UnityEditor;
 using System;
 using System.Collections.Generic;
-using static UnityEngine.Rendering.DebugUI.MessageBox;
 
 
 [CustomEditor(typeof(ShooterDatabase))]

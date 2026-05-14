@@ -24,13 +24,15 @@ MonoBehaviour:
       data:
         ShooterType: 2
         ID: 1003
+        Life: 100
     - rid: 7766517250037383168
       type: {class: RadialShooterData, ns: , asm: Assembly-CSharp}
       data:
         ShooterType: 0
         ID: 1001
+        Life: 100
         DirCount: 4
-        FireRate: 2
+        FireRate: 1
         MoveSpeed: 2
         BulletLifeTime: 5
     - rid: 7766517385507635200
@@ -38,7 +40,8 @@ MonoBehaviour:
       data:
         ShooterType: 1
         ID: 1002
+        Life: 100
         DirCount: 4
         ObjectCount: 4
         RotateSpeed: 2
-        BulletLifeTime: 5
+        BulletLifeTime: -1

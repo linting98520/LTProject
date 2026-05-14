@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 334146594783937650}
   - component: {fileID: 2570619052778158770}
   - component: {fileID: 4074519451667786221}
+  - component: {fileID: 4839213682409730503}
   m_Layer: 0
   m_Name: Block
   m_TagString: Untagged
@@ -119,3 +120,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MaxHealth: 100
+--- !u!114 &4839213682409730503
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3193707408088430525}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02ea656f88074c848b1a0489ae9d4613, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

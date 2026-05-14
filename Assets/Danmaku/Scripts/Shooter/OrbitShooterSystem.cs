@@ -56,15 +56,20 @@ public partial struct OrbitShooterSpawnJob : IJobEntity
             {
                 Entity prefab = Ecb.Instantiate(sortKey, config.Prefab);
 
-                Ecb.AddComponent(sortKey, prefab, new OrbitMoveData
+                Ecb.SetComponent(sortKey, prefab, new OrbitMoveData
                 {
                     Center = config.ShooterPosition,
                     Radius = (x + 1) * 2,
                     Speed = config.Speed,
                     Angle = currentAngle
                 });
+
+                Ecb.SetComponent(sortKey, prefab, new ProjectileLifeTimeData
+                {
+                    RemainingTime = config.BulletLifetime
+                });
             }
         }
-        Ecb.DestroyEntity(sortKey, entity);
+        Ecb.RemoveComponent<OrbitShooterConfig>(sortKey, entity);
     }
 }

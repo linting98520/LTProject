@@ -2,9 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Burst;
 using Unity.Entities;
+using Unity.Mathematics;
 using UnityEngine;
 
-public struct ProjectileLifeTimeComponent : IComponentData
+public struct ProjectileLifeTimeData : IComponentData
 {
     public float RemainingTime;
 }
@@ -15,7 +16,7 @@ public partial struct ProjectileLifeTimeSystem : ISystem
     [BurstCompile]
     public void OnCreate(ref SystemState state)
     {
-        state.RequireForUpdate<ProjectileLifeTimeComponent>();
+        state.RequireForUpdate<ProjectileLifeTimeData>();
     }
 
     [BurstCompile]
@@ -37,8 +38,11 @@ public partial struct ProjectileLifeTimeJob : IJobEntity
     public float DeltaTime;
     public EntityCommandBuffer.ParallelWriter Ecb;
 
-    public void Execute([ChunkIndexInQuery] int sortKey, Entity entity, ref ProjectileLifeTimeComponent component)
+    public void Execute([ChunkIndexInQuery] int sortKey, Entity entity, ref ProjectileLifeTimeData component)
     {
+        if (component.RemainingTime == -1)
+            return;
+
         component.RemainingTime -= DeltaTime;
         if (component.RemainingTime <= 0)
         {

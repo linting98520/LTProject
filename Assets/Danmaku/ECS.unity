@@ -849,9 +849,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c57aee4e6e85fb44b02adf69b7fa721, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Columns: 10
-  Rows: 10
-  CellSize: 5
+  Columns: 20
+  Rows: 20
+  CellSize: 2
   CellGap: 0
   CellHeight: 1
   CellObj: {fileID: 5001483826004832996, guid: 02f1f21af9ee468449704e7d30cae107, type: 3}
@@ -876,7 +876,7 @@ MonoBehaviour:
   InputHandler: {fileID: 242860539}
   ShooterSpawner: {fileID: 242860543}
   ShooterDBPath: Database/ShooterDatabase
-  LoadPlayerPath: 
+  LoadPlayerPath: Prefabs/Player
 --- !u!114 &242860543
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -889,8 +889,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 219767186ac7e384692108d4186b9250, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ShooterDatabasePath: Database/ShooterDatabase
-  SpawnPosOffest: {x: 0, y: 3, z: 0}
+  SpawnPosOffest: {x: 0, y: 1.5, z: 0}
+  SpawnScale: 1
 --- !u!1 &285420927
 GameObject:
   m_ObjectHideFlags: 0

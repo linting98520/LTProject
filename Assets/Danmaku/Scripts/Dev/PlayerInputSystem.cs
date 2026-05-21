@@ -6,39 +6,35 @@ using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
 
-public struct RadialShooterConfig : IComponentData
+public struct FireRequest : IComponentData
 {
-    //砲台數值
     public float3 ShooterPosition;
-    public int EmissionDirectionCount;
-    public float FireRate;
-    public float ElapsedTime;
 
-    //砲彈實體
     public Entity Prefab;
-
-    //砲彈數值
+    
     public float Speed;
-
     public float BulletDamage;
     public float BulletLifetime;
+
+    public float ElapsedTime;
+    public float FireRate;
 }
 
 [BurstCompile]
-public partial struct RadialShooterSpawnSystem : ISystem
+public partial struct FireRequestSystem : ISystem
 {
     [BurstCompile]
     public void OnCreate(ref SystemState state)
     {
-        state.RequireForUpdate<RadialShooterConfig>();
+        state.RequireForUpdate<FireRequest>();
     }
 
     [BurstCompile]
-    public void OnUpdate(ref SystemState state) 
+    public void OnUpdate(ref SystemState state)
     {
         var ecb = SystemAPI.GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>().CreateCommandBuffer(state.WorldUnmanaged).AsParallelWriter();
 
-        state.Dependency = new RadialShooterSpawnJob
+        state.Dependency = new FireJob
         {
             DeltaTime = SystemAPI.Time.DeltaTime,
             Ecb = ecb
@@ -47,12 +43,12 @@ public partial struct RadialShooterSpawnSystem : ISystem
 }
 
 [BurstCompile]
-public partial struct RadialShooterSpawnJob : IJobEntity
+public partial struct FireJob : IJobEntity
 {
     public float DeltaTime;
     public EntityCommandBuffer.ParallelWriter Ecb;
 
-    public void Execute([ChunkIndexInQuery] int sortKey, ref RadialShooterConfig config)
+    public void Execute([ChunkIndexInQuery] int sortKey, ref FireRequest config, in LocalTransform transform)
     {
         config.ElapsedTime += DeltaTime;
         if (config.ElapsedTime < config.FireRate) return;
@@ -66,13 +62,9 @@ public partial struct RadialShooterSpawnJob : IJobEntity
             Lifetime = config.BulletLifetime
         };
 
-        float angleStep = (math.PI * 2f) / config.EmissionDirectionCount;
-        for (int i = 0; i < config.EmissionDirectionCount; i++)
-        {
-            float currentAngle = i * angleStep;
-            float3 dir = new float3(math.cos(currentAngle), 0, math.sin(currentAngle));
-            float3 spawnPosition = config.ShooterPosition + (dir * 2);
-            BulletSpawnHelper.SpawnLinearBullet(ref Ecb, sortKey, in bulletParams, spawnPosition, dir);
-        }
+        float3 dir = transform.Forward();
+        float3 spawnPosition = transform.Position + dir * 2f;
+
+        BulletSpawnHelper.SpawnLinearBullet(ref Ecb, sortKey, in bulletParams, spawnPosition, dir);
     }
 }

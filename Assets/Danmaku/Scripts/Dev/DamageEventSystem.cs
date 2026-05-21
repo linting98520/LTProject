@@ -5,10 +5,10 @@ using Unity.Entities;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public partial struct DamageData : IComponentData
+public partial struct DamageEvent : IComponentData
 {
     public Entity Target; //受擊目標
-    public int DamageValue; //受擊傷害
+    public float DamageValue; //受擊傷害
 }
 
 [BurstCompile]
@@ -18,7 +18,7 @@ public partial struct DamageSystem : ISystem
     [BurstCompile]
     public void OnCreate(ref SystemState state)
     {
-        state.RequireForUpdate<DamageData>();
+        state.RequireForUpdate<DamageEvent>();
     }
 
     [BurstCompile]
@@ -29,7 +29,7 @@ public partial struct DamageSystem : ISystem
 
         var healthLookup = SystemAPI.GetComponentLookup<HealthData>();
 
-        foreach (var (damageData, entity) in SystemAPI.Query<RefRO<DamageData>>().WithEntityAccess())
+        foreach (var (damageData, entity) in SystemAPI.Query<RefRO<DamageEvent>>().WithEntityAccess())
         {
             if (healthLookup.HasComponent(damageData.ValueRO.Target))
             {

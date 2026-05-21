@@ -16,6 +16,7 @@ public class ObjectileSpawnAuthoring : MonoBehaviour
     [SerializeField] private GameObject OrbitTowerObj;
     
     [SerializeField] private GameObject BlockObj;
+    [SerializeField] private GameObject PlayerBulletObj;
 
     private class UISpawnBtnBaker : Baker<ObjectileSpawnAuthoring>
     {
@@ -34,7 +35,7 @@ public class ObjectileSpawnAuthoring : MonoBehaviour
                 OrbitBulletEntity = GetEntity(authoring.OrbitObj, TransformUsageFlags.Dynamic),
                 OrbitShooterEntity = GetEntity(authoring.OrbitTowerObj, TransformUsageFlags.Dynamic),
 
-                BlockEntity = GetEntity(authoring.BlockObj, TransformUsageFlags.Dynamic)
+                BlockEntity = GetEntity(authoring.BlockObj, TransformUsageFlags.Dynamic),
             });
         }
     }

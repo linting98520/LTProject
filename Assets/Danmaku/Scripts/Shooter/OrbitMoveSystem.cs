@@ -41,12 +41,10 @@ public partial struct OrbitMoveJob : IJobEntity
 
     private void Execute(ref LocalTransform transform, ref OrbitMoveData orbit, ref NextPosition next)
     {
-        orbit.Angle += orbit.Speed * DeltaTime;
-
         float x = math.cos(orbit.Angle) * orbit.Radius;
         float z = math.sin(orbit.Angle) * orbit.Radius;
-
-        //移動會在 HitMoveJob 執行
         next.Value = orbit.Center + new float3(x, 0, z);
+
+        orbit.Angle += orbit.Speed * DeltaTime;
     }
 }

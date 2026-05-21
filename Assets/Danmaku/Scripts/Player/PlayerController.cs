@@ -1,9 +1,16 @@
+using Unity.Entities;
+using Unity.Mathematics;
+using UnityEditor.PackageManager;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(Collider))]
 public class PlayerController : MonoBehaviour
 {
+    private EntityManager entityManager;
+    private Entity playerEntity;
+
     [Header("移動")]
     [Tooltip("移動速度（公尺/秒）")]
     public float MoveSpeed = 5f;
@@ -15,12 +22,28 @@ public class PlayerController : MonoBehaviour
     private Rigidbody rb;
     private Vector3 inputDir;
 
+    public GameObject PlayerBulletObj;
+    public float BulletSpeed;
+    public float BulletDamage;
+    public float BulletElapsedTime;
+    public float BulletFireRate;
+
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
+        rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
 
-        rb.constraints = RigidbodyConstraints.FreezeRotationX
-                       | RigidbodyConstraints.FreezeRotationZ;
+        entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
+        playerEntity = entityManager.CreateEntity();
+        //entityManager.AddComponent(playerEntity, new FireRequest
+        //{
+        //    ShooterPosition = float3.zero,
+        //    Prefab = GetEntity(PlayerBulletObj, TransformUsageFlags.Dynamic),
+        //    Speed = BulletSpeed,
+        //    BulletDamage = BulletDamage,
+        //    ElapsedTime = BulletElapsedTime,
+        //    FireRate = BulletFireRate
+        //});
     }
 
     void Update()

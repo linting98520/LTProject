@@ -53,7 +53,7 @@ public partial struct HitMoveJob : IJobEntity
     public EntityCommandBuffer.ParallelWriter Ecb;
     public CollisionFilter Filter;
 
-    public void Execute([ChunkIndexInQuery] int sortKey, Entity entity, ref LocalTransform transform, in NextPosition next)
+    public void Execute([ChunkIndexInQuery] int sortKey, Entity entity, ref LocalTransform transform, in NextPosition next, in Damage damage)
     {
         var input = new RaycastInput
         {
@@ -64,7 +64,13 @@ public partial struct HitMoveJob : IJobEntity
 
         if (PhysicsWorld.CastRay(input, out var hit))
         {
-            // 等待實作給予傷害
+            var evt = Ecb.CreateEntity(sortKey);
+            Ecb.AddComponent(sortKey, evt, new DamageEvent
+            {
+                Target = hit.Entity,
+                DamageValue = damage.Value
+            });
+
             Ecb.DestroyEntity(sortKey, entity);
             return;
         }

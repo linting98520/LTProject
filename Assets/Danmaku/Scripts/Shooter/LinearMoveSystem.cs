@@ -37,7 +37,6 @@ public partial struct LinearMoveJob : IJobEntity
     public float DeltaTime;
     public void Execute(ref LocalTransform localTransform, in LinearMoveData data, ref NextPosition next)
     {
-        //localTransform.Position += data.Direction * data.Speed * DeltaTime;
         next.Value = localTransform.Position + (data.Direction * data.Speed * DeltaTime);
     }
 }

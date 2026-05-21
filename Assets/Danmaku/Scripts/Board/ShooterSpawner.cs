@@ -6,14 +6,26 @@ using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
 
+public struct GameObjectLink : IComponentData
+{
+    public int LinkedInstanceID;   // 對應 GameObject 的 instanceID
+    public LinkType Type;          // 連結類型
+}
+
 public abstract class ShooterSpawnerBase
 {
-    public virtual void Spawn(Vector3 worldPos, float scale, ShooterBaseData data)
+    public virtual void Spawn(int cellId, Vector3 worldPos, float scale, ShooterBaseData data)
     {
         var manager = World.DefaultGameObjectInjectionWorld.EntityManager;
         EntityQuery entityQuery = manager.CreateEntityQuery(typeof(SpawnRegistry));
         SpawnRegistry config = entityQuery.GetSingleton<SpawnRegistry>();
-        SetComponent(manager, config, worldPos, scale, data);
+        Entity e = SetComponent(manager, config, worldPos, scale, data);
+
+        manager.AddComponentData(e, new GameObjectLink
+        {
+            LinkedInstanceID = cellId,
+            Type = LinkType.BuildingCell
+        });
     }
 
     public virtual void SetSpawnPos(EntityManager manager, Entity entity, Vector3 worldPos)
@@ -23,12 +35,12 @@ public abstract class ShooterSpawnerBase
         manager.SetComponentData(entity, lt);
     }
 
-    public abstract void SetComponent(EntityManager manager, SpawnRegistry config, Vector3 worldPos, float scale, ShooterBaseData data);
+    public abstract Entity SetComponent(EntityManager manager, SpawnRegistry config, Vector3 worldPos, float scale, ShooterBaseData data);
 }
 
 public class RadialSpawner : ShooterSpawnerBase
 {
-    public override void SetComponent(EntityManager manager, SpawnRegistry config, Vector3 worldPos, float scale, ShooterBaseData data)
+    public override Entity SetComponent(EntityManager manager, SpawnRegistry config, Vector3 worldPos, float scale, ShooterBaseData data)
     {
         RadialShooterData rd = data as RadialShooterData;
         Entity shooter = manager.Instantiate(config.RadialShooterEntity);
@@ -41,18 +53,20 @@ public class RadialSpawner : ShooterSpawnerBase
             FireRate = rd.FireRate,
             Speed = rd.MoveSpeed,
             ElapsedTime = rd.FireRate,
+            BulletDamage = rd.BulletDamage,
             BulletLifetime = rd.BulletLifeTime
         });
         manager.SetComponentData(shooter, new HealthData
         {
             Life = data.Life
         });
+        return shooter;
     }
 }
 
 public class OrbitSpawner : ShooterSpawnerBase
 {
-    public override void SetComponent(EntityManager manager, SpawnRegistry config, Vector3 worldPos, float scale, ShooterBaseData data)
+    public override Entity SetComponent(EntityManager manager, SpawnRegistry config, Vector3 worldPos, float scale, ShooterBaseData data)
     {
         OrbitShooterData ob = data as OrbitShooterData;
         Entity shooter = manager.Instantiate(config.OrbitShooterEntity);
@@ -64,17 +78,19 @@ public class OrbitSpawner : ShooterSpawnerBase
             EmissionDirectionCount = ob.DirCount,
             ObjectCount = ob.ObjectCount,
             Speed = ob.RotateSpeed,
+            BulletDamage = ob.BulletDamage,
             BulletLifetime = ob.BulletLifeTime
         });
         manager.SetComponentData(shooter, new HealthData
         {
             Life = data.Life
         });
+        return shooter;
     }
 }
 public class BlockSpanwer : ShooterSpawnerBase
 {
-    public override void SetComponent(EntityManager manager, SpawnRegistry config, Vector3 worldPos, float scale, ShooterBaseData data)
+    public override Entity SetComponent(EntityManager manager, SpawnRegistry config, Vector3 worldPos, float scale, ShooterBaseData data)
     {
         Entity block = manager.Instantiate(config.BlockEntity);
         SetSpawnPos(manager, block, worldPos);
@@ -82,6 +98,11 @@ public class BlockSpanwer : ShooterSpawnerBase
         {
             SpawnPos = worldPos
         });
+        manager.SetComponentData(block, new HealthData
+        {
+            Life = data.Life
+        });
+        return block;
     }
 }
 
@@ -99,12 +120,12 @@ public class ShooterFactory
         };
     }
 
-    public void Spawn(Vector3 worldPos, float scale, ShooterBaseData data)
+    public void Spawn(int cellId, Vector3 worldPos, float scale, ShooterBaseData data)
     {
         Type type = data.GetType();
         if (shooterDic.TryGetValue(type, out ShooterSpawnerBase spawner))
         {
-            spawner.Spawn(worldPos, scale, data);
+            spawner.Spawn(cellId, worldPos, scale, data);
         }
     }
 }
@@ -128,11 +149,11 @@ public class ShooterSpawner : MonoBehaviour
         shooterDatabase  =database;
     }
 
-    public bool TryToSpawn(Vector3 worldPos, int id)
+    public bool TryToSpawn(int cellId, Vector3 worldPos, int shooterId)
     {
-        if (shooterDatabase.TryGetShooterData(id, out ShooterBaseData data))
+        if (shooterDatabase.TryGetShooterData(shooterId, out ShooterBaseData data))
         {
-            shooterFactory.Spawn(worldPos + SpawnPosOffest, SpawnScale, data);
+            shooterFactory.Spawn(cellId, worldPos + SpawnPosOffest, SpawnScale, data);
             return true;
         }
         return false;

@@ -4,19 +4,19 @@ using Unity.Burst;
 using Unity.Entities;
 using UnityEngine;
 
-public struct HealthData : IComponentData
+public struct EntityLinkBrokenEvent : IComponentData
 {
-    public float Life;
+    public int LinkedInstanceID;
+    public LinkType Type;
 }
 
 [BurstCompile]
-[UpdateAfter(typeof(DamageSystem))]
-public partial struct HealthSystem : ISystem
+public partial struct GameObjectLinkBrokenDetectionSystem : ISystem
 {
     [BurstCompile]
     public void OnCreate(ref SystemState state)
     {
-        state.RequireForUpdate<HealthData>();
+        state.RequireForUpdate<GameObjectLink>();
     }
 
     [BurstCompile]
@@ -25,7 +25,7 @@ public partial struct HealthSystem : ISystem
         var ecb = SystemAPI.GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>()
                            .CreateCommandBuffer(state.WorldUnmanaged)
                            .AsParallelWriter();
-        state.Dependency = new HealthJob()
+        state.Dependency = new DetectionJob
         {
             Ecb = ecb
         }.ScheduleParallel(state.Dependency);
@@ -33,14 +33,19 @@ public partial struct HealthSystem : ISystem
 }
 
 [BurstCompile]
-public partial struct HealthJob : IJobEntity
+public partial struct DetectionJob: IJobEntity
 {
     public EntityCommandBuffer.ParallelWriter Ecb;
-    public void Execute([ChunkIndexInQuery]int sortKey, Entity entity, ref HealthData data)
+
+    public void Execute([ChunkIndexInQuery] int sortKey, in HealthData hp, in GameObjectLink link)
     {
-        if (data.Life <= 0)
+        if (hp.Life > 0f) return;
+
+        var evt = Ecb.CreateEntity(sortKey);
+        Ecb.AddComponent(sortKey, evt, new EntityLinkBrokenEvent
         {
-            Ecb.DestroyEntity(sortKey, entity);
-        }
+            LinkedInstanceID = link.LinkedInstanceID,
+            Type = link.Type
+        });
     }
 }

@@ -48,13 +48,20 @@ public class BoardManager : MonoBehaviour
             for (int z = 0; z < Rows; z++)
             {
                 Vector3 pos = new Vector3(startX + x * (CellSize + CellGap), 0f, startZ + z * (CellSize + CellGap));
-                Cell cell = CreateCell(x, z, pos);
+                Cell cell = CreateCell(x, z, pos, (x * Rows) + z);
                 cells[x, z] = cell;
             }
         }
     }
 
-    private Cell CreateCell(int x, int z, Vector3 position)
+    public Cell GetCell(int id)
+    {
+        int col = id / Rows;
+        int row = id % Rows;
+        return cells[col, row];
+    }
+
+    private Cell CreateCell(int x, int z, Vector3 position, int id)
     {
         GameObject go = Instantiate(CellObj, Root.transform);
         go.name = $"Cell_{x}_{z}";
@@ -63,7 +70,7 @@ public class BoardManager : MonoBehaviour
         go.transform.localScale = new Vector3(CellSize, CellHeight, CellSize);
 
         Cell cell = go.GetComponent<Cell>();
-        cell.Initialize(x, z);
+        cell.Initialize(x, z, id);
 
         return cell;
     }

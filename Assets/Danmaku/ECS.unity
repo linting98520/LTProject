@@ -797,6 +797,8 @@ GameObject:
   - component: {fileID: 242860541}
   - component: {fileID: 242860542}
   - component: {fileID: 242860543}
+  - component: {fileID: 242860544}
+  - component: {fileID: 242860545}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -871,6 +873,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71247dcfe02b7e44b96c9ee6ed10344c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  BrokenDispatcher: {fileID: 242860545}
   BoardManager: {fileID: 242860541}
   BoardUIController: {fileID: 75399022}
   InputHandler: {fileID: 242860539}
@@ -891,6 +894,30 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SpawnPosOffest: {x: 0, y: 1.5, z: 0}
   SpawnScale: 1
+--- !u!114 &242860544
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 242860538}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 608fbcab6a2f8eb47889afcad4e2f81c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &242860545
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 242860538}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 608fbcab6a2f8eb47889afcad4e2f81c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &285420927
 GameObject:
   m_ObjectHideFlags: 0

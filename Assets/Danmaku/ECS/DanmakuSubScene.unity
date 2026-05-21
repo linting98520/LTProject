@@ -159,6 +159,7 @@ MonoBehaviour:
   OrbitObj: {fileID: 4258173830581364943, guid: 1a442bd07694ddf46a5beb4c66853530, type: 3}
   OrbitTowerObj: {fileID: 3193707408088430525, guid: 7a15474c7793e174883446a815f3198e, type: 3}
   BlockObj: {fileID: 3193707408088430525, guid: 2a5f7ebfe41c38945b62896ca58bd9a1, type: 3}
+  PlayerBulletObj: {fileID: 4258173830581364943, guid: 38fc78b6d0db0da46834786e811a3440, type: 3}
 --- !u!4 &620784558
 Transform:
   m_ObjectHideFlags: 0

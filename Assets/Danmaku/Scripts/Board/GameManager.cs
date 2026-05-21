@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour
     private static GameManager _instance;
     public static GameManager Instance => _instance;
 
+    public LinkBrokenDispatcher BrokenDispatcher;
     public BoardManager BoardManager;
     public DeckUIController BoardUIController;
     public BoardInputHandler InputHandler;
@@ -15,6 +16,7 @@ public class GameManager : MonoBehaviour
 
     public string ShooterDBPath;
     public string LoadPlayerPath;
+
 
     private void Awake()
     {
@@ -38,12 +40,14 @@ public class GameManager : MonoBehaviour
     {
         InputHandler.OnCellClicked += SpawnShooter;
         InputHandler.OnMissClicked += InterruptSpawnShooter;
+        BrokenDispatcher.Register(LinkType.BuildingCell, DestroyShooter);
     }
 
     private void OnDisable()
     {
         InputHandler.OnCellClicked -= SpawnShooter;
         InputHandler.OnMissClicked -= InterruptSpawnShooter;
+        BrokenDispatcher.Unregister(LinkType.BuildingCell, DestroyShooter);
     }
 
     public void ReadyForBuild()
@@ -56,8 +60,19 @@ public class GameManager : MonoBehaviour
         int id = BoardUIController.ReadySpawnID;
         if (cell?.IsBuild == false)
         {
-            bool isbuild = ShooterSpawner.TryToSpawn(cell.transform.position, id);
+            bool isbuild = ShooterSpawner.TryToSpawn(cell.ID, cell.transform.position, id);
             cell.SetBuildingState(isbuild);
+            Debug.Log($"Build=> Cell ID = {cell.ID}");
+        }
+    }
+
+    public void DestroyShooter(int id)
+    {
+        Cell cell = BoardManager.GetCell(id);
+        if (cell != null)
+        {
+            cell.SetBuildingState(false);
+            Debug.Log($"Destroy=> Cell ID = {cell.ID}");
         }
     }
 

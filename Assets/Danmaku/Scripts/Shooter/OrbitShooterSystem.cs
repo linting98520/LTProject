@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.Burst;
 using Unity.Entities;
 using Unity.Mathematics;
+using Unity.Transforms;
 using UnityEngine;
 
 public struct OrbitShooterConfig : IComponentData
@@ -16,6 +17,7 @@ public struct OrbitShooterConfig : IComponentData
     public Entity Prefab;
 
     public float Speed;
+    public float BulletDamage;
     public float BulletLifetime;
 }
 
@@ -46,30 +48,25 @@ public partial struct OrbitShooterSpawnJob : IJobEntity
 
     public void Execute(Entity entity, [ChunkIndexInQuery] int sortKey, ref OrbitShooterConfig config)
     {
-        float angleStep = (math.PI * 2f) / config.EmissionDirectionCount;
+        var bulletParams = new BulletSpawnParams
+        {
+            Prefab = config.Prefab,
+            Speed = config.Speed,
+            Damage = config.BulletDamage,
+            Lifetime = config.BulletLifetime
+        };
 
+        float angleStep = (math.PI * 2f) / config.EmissionDirectionCount;
         for (int i = 0; i < config.EmissionDirectionCount; i++)
         {
             float currentAngle = i * angleStep;
-
             for (int x = 0; x < config.ObjectCount; x++)
             {
-                Entity prefab = Ecb.Instantiate(sortKey, config.Prefab);
-
-                Ecb.SetComponent(sortKey, prefab, new OrbitMoveData
-                {
-                    Center = config.ShooterPosition,
-                    Radius = (x + 1) * 2,
-                    Speed = config.Speed,
-                    Angle = currentAngle
-                });
-
-                Ecb.SetComponent(sortKey, prefab, new ProjectileLifeTimeData
-                {
-                    RemainingTime = config.BulletLifetime
-                });
+                float radius = (x + 1) * 2f;
+                BulletSpawnHelper.SpawnOrbitBullet(ref Ecb, sortKey, in bulletParams, config.ShooterPosition, radius, currentAngle);
             }
         }
+
         Ecb.RemoveComponent<OrbitShooterConfig>(sortKey, entity);
     }
 }

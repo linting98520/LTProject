@@ -12,20 +12,20 @@ public class PlayerControllerAuthoring : MonoBehaviour
     public float BulletElapsedTime;
     public float BulletFireRate;
 
-    public class Baker : Baker<PlayerControllerAuthoring>
-    {
-        public override void Bake(PlayerControllerAuthoring authoring)
-        {
-            var entity = GetEntity(TransformUsageFlags.Dynamic);
-            AddComponent(entity, new FireRequest
-            {
-                ShooterPosition = float3.zero,
-                Prefab = GetEntity(authoring.PlayerBulletObj, TransformUsageFlags.Dynamic),
-                Speed = authoring.BulletSpeed,
-                BulletDamage = authoring.BulletDamage,
-                ElapsedTime = authoring.BulletElapsedTime,
-                FireRate = authoring.BulletFireRate
-            });
-        }
-    }
+    //public class Baker : Baker<PlayerControllerAuthoring>
+    //{
+    //    public override void Bake(PlayerControllerAuthoring authoring)
+    //    {
+    //        var entity = GetEntity(TransformUsageFlags.Dynamic);
+    //        AddComponent(entity, new FireRequest
+    //        {
+    //            ShooterPosition = float3.zero,
+    //            Prefab = GetEntity(authoring.PlayerBulletObj, TransformUsageFlags.Dynamic),
+    //            Speed = authoring.BulletSpeed,
+    //            BulletDamage = authoring.BulletDamage,
+    //            ElapsedTime = authoring.BulletElapsedTime,
+    //            FireRate = authoring.BulletFireRate
+    //        });
+    //    }
+    //}
 }

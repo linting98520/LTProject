@@ -14,8 +14,7 @@ GameObject:
   - component: {fileID: 5699405583443028606}
   - component: {fileID: -3030723527091436926}
   - component: {fileID: 3200994015646354606}
-  - component: {fileID: 1343633475269805142}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -150,23 +149,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MoveSpeed: 5
   RotationSpeed: 720
---- !u!114 &1343633475269805142
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4141936357191483274}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1bec98691a703bf42aa4f397a2ae198e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  PlayerBulletObj: {fileID: 4258173830581364943, guid: 38fc78b6d0db0da46834786e811a3440, type: 3}
-  BulletSpeed: 5
+  BulletSpeed: 8
   BulletDamage: 0
-  BulletElapsedTime: 10
-  BulletFireRate: 1
+  BulletFireRate: 0.2
 --- !u!1 &6583638539655219635
 GameObject:
   m_ObjectHideFlags: 0
@@ -179,7 +164,7 @@ GameObject:
   - component: {fileID: 9199599476595974572}
   - component: {fileID: 2751210537966513324}
   - component: {fileID: 4760742672808203731}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
